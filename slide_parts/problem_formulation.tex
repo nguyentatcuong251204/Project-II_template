@@ -1,0 +1,19 @@
+
+\begin{frame}{Phát biểu bài toán}
+    Cho một ảnh quan sát $Y$ chứa phương tiện và vùng biển số bị suy giảm do nhiễu và/hoặc mờ, mục tiêu là tìm một ảnh ước lượng $\hat{X}$ gần với ảnh nguyên gốc $X$.
+    
+    \vspace{0.5cm}
+    Mô hình tổng quát:
+    \begin{equation}
+        Y = K * X + N
+    \end{equation}
+    trong đó:
+    \begin{itemize}
+        \item $K$: hạt nhân làm mờ (blur kernel)
+        \item $*$: phép nhân chập
+        \item $N$: thành phần nhiễu (Gaussian, Poisson, sensor noise)
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    Nhiệm vụ: Ước lượng $\hat{X}$ và (nếu cần) $K$ từ $Y$.
+\end{frame}

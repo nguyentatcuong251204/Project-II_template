@@ -1,0 +1,27 @@
+HƯỚNG DẪN COMPILE SLIDE ĐỒ ÁN
+================================
+
+Do hạn chế với encoding trong terminal, bạn cần compile theo một trong các cách sau:
+
+CÁCH 1: Double-click vào file compile_slides.bat
+- Mở File Explorer
+- Vào thư mục: D:\Đồ_án_2 - Copy  
+- Double-click vào file: compile_slides.bat
+- File PDF sẽ được tạo: slide_do_an.pdf
+
+CÁCH 2: Chạy từ Command Prompt (cmd)
+1. Mở Command Prompt (Windows + R, gõ "cmd", Enter)
+2. Gõ các lệnh sau:
+   cd /d "D:\Đồ_án_2 - Copy"
+   xelatex -interaction=nonstopmode slide_do_an.tex
+   xelatex -interaction=nonstopmode slide_do_an.tex
+
+(Lưu ý: Cần chạy xelatex 2 lần để xử lý references và table of contents)
+
+CÁCH 3: Sử dụng LaTeX Editor
+- Mở file slide_do_an.tex trong TeXstudio, TeXmaker, hoặc Overleaf
+- Nhấn F5 hoặc nút Compile để build PDF
+
+Sau khi compile thành công, file PDF sẽ có tên: slide_do_an.pdf
+
+Nếu gặp lỗi, kiểm tra file: slide_do_an.log để xem chi tiết lỗi.

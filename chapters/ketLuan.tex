@@ -1,0 +1,45 @@
+\chapter*{Kết luận}
+\addcontentsline{toc}{chapter}{Kết luận}
+\markboth{Kết luận}{Kết luận }
+
+Đồ án đã tập trung giải quyết bài toán nhận dạng phiếu trắc nghiệm tự động. Trọng tâm nghiên cứu là xây dựng và đánh giá một mô-đun nhận diện đáp án bài làm hiệu quả, dựa trên nền tảng mô hình học sâu YOLOv8.
+
+\medskip % Thêm một khoảng cách nhỏ
+
+\textbf{Những kết quả chính đạt được:}
+\begin{itemize}
+    \item Xây dựng thành công một quy trình xử lý dữ liệu toàn diện: từ khâu tạo dữ liệu gốc, tiền xử lý ảnh, đến gán nhãn chi tiết bằng Roboflow và tăng cường dữ liệu.
+    \item Huấn luyện và tối ưu hóa mô hình YOLOv8, cho phép nhận diện chính xác các ô lựa chọn (đã tô và chưa tô) trên phiếu. Kết quả đánh giá trên tập dữ liệu kiểm thử cho thấy hiệu năng cao, ví dụ, chỉ số mAP@0.5 trên Phần 2 đạt xấp xỉ 99\%.
+    \item Đề xuất và minh họa việc áp dụng thuật toán phân cụm K-means để ánh xạ logic các lựa chọn đã được nhận diện, tạo cơ sở cho việc chấm điểm tự động.
+    \item đồ án là một phần đóng góp trong dự án XÂY DỰNG HỆ THỐNG CHẤM THI TRẮC NGHIỆM TỰ ĐỘNG
+ ỨNG DỤNG TẠI KHOA TOÁN - TIN, ĐẠI HỌC BÁCH KHOA HÀ NỘI. Dưới đây là giấy chứng nhận sinh viên đã tham gia tích cực trong dự án.
+
+ \begin{figure}[h!]
+     \centering
+     \includegraphics[width=0.85\linewidth]{proj1_khoa1.jpg}
+     \caption{Giấy chứng nhận}
+     \label{fig:enter-label}
+ \end{figure}
+\end{itemize}
+\newpage
+\medskip
+\textbf{
+Một số hạn chế của đồ án:}
+\begin{itemize}
+    \item Phạm vi bộ dữ liệu huấn luyện và đánh giá còn giới hạn, có thể chưa bao quát hết mọi biến thể phiếu và điều kiện thực tế.
+    \item Khả năng xử lý các trường hợp tô đáp án đặc biệt phức tạp (tẩy xóa nhiều, tô nhiều đáp án) cần được cải thiện thêm.
+\end{itemize}
+
+\medskip
+
+\textbf{Định hướng phát triển trong tương lai:}
+\begin{itemize}
+    \item Mở rộng và đa dạng hóa bộ dữ liệu huấn luyện để tăng cường khả năng tổng quát hóa của mô hình.
+    \item Cải tiến thuật toán để xử lý hiệu quả hơn các trường hợp tô phiếu ngoại lệ.
+    \item Tích hợp các giải pháp Nhận dạng Ký tự Quang học (OCR) tiên tiến cho việc trích xuất thông tin định danh.
+
+    \item Tiếp tục nghiên cứu và áp dụng các kiến trúc mô hình nhận diện đối tượng mới nhất để không ngừng nâng cao hiệu quả.
+\end{itemize}
+
+\medskip
+

@@ -1,0 +1,59 @@
+
+\begin{frame}{Khoảng trống nghiên cứu}
+    \begin{table}[]
+        \centering
+        \tiny % Reduce font size to fit better
+        \setlength{\tabcolsep}{3pt} % Reduce column padding
+        \renewcommand{\arraystretch}{1.2} % Adjust row height
+        \resizebox{\textwidth}{!}{%
+        \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{Phương pháp} & \textbf{Ưu điểm} & \textbf{Hạn chế} \\ \hline
+        \textbf{AE} & 
+        \begin{minipage}{0.3\textwidth}
+        \begin{itemize}
+            \item Gọn nhẹ
+            \item Phù hợp hệ thống giám sát
+        \end{itemize}
+        \end{minipage} & 
+        \begin{minipage}{0.3\textwidth}
+        \begin{itemize}
+            \item Mất mát thông tin tần số cao
+            \item Thất bại với cấu trúc trung/cao cấp
+        \end{itemize}
+        \end{minipage} \\ \hline
+        \textbf{GAN} & 
+        \begin{minipage}{0.3\textwidth}
+        \begin{itemize}
+            \item Ảnh sắc nét, chân thực
+            \item Cải thiện perceptual quality
+        \end{itemize}
+        \end{minipage} & 
+        \begin{minipage}{0.3\textwidth}
+        \begin{itemize}
+            \item Biến dạng độ trung thực pixel
+            \item Dễ sinh chi tiết giả (hallucination)
+            \item Khó huấn luyện
+        \end{itemize}
+        \end{minipage} \\ \hline
+        \textbf{FB} & 
+        \begin{minipage}{0.3\textwidth}
+        \begin{itemize}
+            \item Bảo toàn độ chính xác pixel
+            \item Ánh xạ khả nghịch
+        \end{itemize}
+        \end{minipage} & 
+        \begin{minipage}{0.3\textwidth}
+        \begin{itemize}
+            \item Độ phức tạp tính toán cao
+            \item Tốn bộ nhớ lớn
+        \end{itemize}
+        \end{minipage} \\ \hline
+        \end{tabular}%
+        }
+    \end{table}
+    \vspace{0.1cm}
+    \begin{block}{Khoảng trống nghiên cứu}
+        Thiết kế mô hình \textbf{nhẹ, thời gian thực} nhưng vẫn \textbf{bảo toàn chi tiết chính xác} cho tăng cường ảnh giao thông.
+    \end{block}
+\end{frame}

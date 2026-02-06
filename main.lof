@@ -1,0 +1,18 @@
+\babel@toc {vietnamese}{}\relax 
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1.2.1}{\ignorespaces Kiến trúc ANN}}{6}{figure.caption.6}%
+\contentsline {figure}{\numberline {1.3.1}{\ignorespaces Ảnh màu RGB}}{8}{figure.caption.7}%
+\contentsline {figure}{\numberline {1.3.2}{\ignorespaces Lớp tích chập trong trích xuất đặc trưng}}{8}{figure.caption.8}%
+\contentsline {figure}{\numberline {1.3.3}{\ignorespaces Cách tính tích chập chuyển vị}}{9}{figure.caption.9}%
+\contentsline {figure}{\numberline {1.3.4}{\ignorespaces Lớp pooling trong mạng nơ-ron tích chập}}{10}{figure.caption.10}%
+\contentsline {figure}{\numberline {1.3.5}{\ignorespaces Hàm kích hoạt ReLU}}{12}{figure.caption.11}%
+\contentsline {figure}{\numberline {1.6.1}{\ignorespaces Kiến trúc Autoencoder}}{15}{figure.caption.12}%
+\contentsline {figure}{\numberline {1.7.1}{\ignorespaces Kiến trúc GAN}}{16}{figure.caption.13}%
+\contentsline {figure}{\numberline {1.8.1}{\ignorespaces Kiến trúc Flow based}}{18}{figure.caption.14}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1.1}{\ignorespaces Kiến trúc phương pháp VRAE}}{23}{figure.caption.15}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.2.1}{\ignorespaces Sự thay đổi Entropy trung bình qua các lớp mã hóa của AE và VRAE.}}{30}{figure.caption.17}%
+\contentsline {figure}{\numberline {4.3.1}{\ignorespaces Trực quan hóa sự đánh đổi giữa hiệu suất tái tạo (NMSE, PSNR, SSIM) và tốc độ suy luận (FPS) thông qua mặt tiền Pareto.}}{31}{figure.caption.18}%
+\contentsline {figure}{\numberline {4.5.1}{\ignorespaces Giấy chứng nhận tham dự và trình bày tại SOICT 2025}}{33}{figure.caption.20}%

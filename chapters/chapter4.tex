@@ -1,0 +1,112 @@
+\chapter{Ứng dụng mô hình trong chấm điểm tự động }
+\label{sec:inference_grading}
+Sau khi mô hình YOLOv8 đã được huấn luyện và đánh giá đạt yêu cầu, bước tiếp theo là triển khai mô hình này vào một quy trình tự động để nhận diện thông tin trên các phiếu trả lời mới và thực hiện chấm điểm.
+
+\section{Nhận diện Vùng Thông tin trên Phiếu}
+\label{sec:info_detection}
+\textbf{Thực hiện:}
+\begin{itemize}
+    \item Script chính: \texttt{src/main\_tmp.py} (hoặc tên script thực thi cuối cùng của bạn).
+    \item Tải mô hình: Tải trọng số mô hình YOLO đã huấn luyện (ví dụ: \texttt{src/models/best.pt}) bằng thư viện Ultralytics.
+    \item Xử lý đầu vào: Hệ thống nhận đầu vào là các tệp ảnh phiếu trả lời trắc nghiệm (đã được chuyển đổi từ PDF nếu cần).
+    \item Thực hiện Inference: Với mỗi ảnh phiếu, mô hình YOLO sẽ thực hiện quá trình inference (dự đoán) để xác định vị trí (bounding box), lớp (class) và độ tin cậy (confidence score) của các đối tượng đã được huấn luyện để nhận diện (số báo danh, mã đề, các ô đáp án A, B, C, D).
+\end{itemize}
+Kết quả thô từ mô hình YOLO là một danh sách các bounding box cùng với thông tin về lớp và độ tin cậy.
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.7\textwidth]{path/to/your/inference_result_raw.png}
+    \fbox{\parbox[c][8cm][c]{0.7\textwidth}{\centering \vspace*{3.5cm} (Hình ảnh minh họa kết quả nhận diện thô từ YOLO trên một phiếu trả lời, các bounding box bao quanh SBD, Mã đề, các ô A, B, C, D)}}
+    \caption{Kết quả nhận diện các vùng thông tin thô từ mô hình YOLO.}
+    \label{fig:inference_raw}
+\end{figure}
+
+\section{Hậu xử lý Kết quả Nhận diện (Post-processing)}
+\label{sec:post_processing}
+Kết quả nhận diện thô từ YOLO thường cần được hậu xử lý để trích xuất thông tin một cách chính xác và có cấu trúc, đồng thời loại bỏ các nhận diện sai hoặc nhiễu. Đây là một bước quan trọng, quyết định độ chính xác của toàn hệ thống.
+\textbf{Thực hiện:}
+Sử dụng các hàm và logic được định nghĩa trong các script như \texttt{src/old.py} (cần xem xét lại tên và cấu trúc nếu đây là code cũ) và \texttt{src/multiple\_choice\_detection.py}. Các kỹ thuật hậu xử lý có thể bao gồm:
+\begin{itemize}
+    \item \textbf{Lọc theo Ngưỡng Tin cậy (Confidence Thresholding):} Loại bỏ các phát hiện có độ tin cậy thấp hơn một ngưỡng nhất định.
+    \item \textbf{Non-Maximum Suppression (NMS):} Mặc dù YOLO đã tích hợp NMS, có thể cần áp dụng NMS tùy chỉnh trong một số trường hợp phức tạp hoặc để hợp nhất các bounding box chồng chéo của cùng một đối tượng.
+    \item \textbf{Phân cụm Bounding Box (Clustering):}
+        \begin{itemize}
+            \item \textbf{Mục đích:} Nhóm các ô đáp án được phát hiện thành các hàng (tương ứng với từng câu hỏi) và các cột (tương ứng với các lựa chọn A, B, C, D). Điều này rất quan trọng để xác định đáp án cho từng câu cụ thể.
+            \item \textbf{Phương pháp:}
+                \begin{itemize}
+                    \item \textbf{Rule-based (Dựa trên luật):} Sắp xếp các bounding box dựa trên tọa độ y của chúng để xác định các hàng, sau đó sắp xếp theo tọa độ x trong mỗi hàng để xác định thứ tự các ô A, B, C, D. Phương pháp này hiệu quả nếu bố cục phiếu tương đối cố định.
+                    \item \textbf{K-means Clustering:} Phân cụm các bounding box của ô đáp án dựa trên tọa độ y của chúng để nhóm thành các hàng câu hỏi. Sau đó, trong mỗi hàng, sắp xếp theo tọa độ x.
+                \end{itemize}
+        \end{itemize}
+    \item \textbf{Chuẩn hóa Thứ tự Đáp án:} Đảm bảo rằng các ô đáp án trong mỗi câu hỏi được sắp xếp đúng thứ tự (ví dụ: A, B, C, D từ trái sang phải hoặc từ trên xuống dưới, tùy theo thiết kế phiếu).
+    \item \textbf{Xác định Ô được chọn (Selected Answer Detection):}
+        \begin{itemize}
+            \item \textbf{Mục đích:} Từ các ô A, B, C, D đã được nhận diện cho mỗi câu, xác định ô nào đã được thí sinh tô chọn.
+            \item \textbf{Phương pháp:}
+                \begin{itemize}
+                    \item \textbf{Phân tích cường độ pixel:} Tính toán trung bình hoặc tổng cường độ pixel bên trong mỗi bounding box của ô đáp án. Ô được tô đậm sẽ có giá trị cường độ pixel thấp hơn (nếu mực đen trên nền trắng).
+                    \item \textbf{Sử dụng mô hình phụ (nếu cần):} Nếu việc phân tích pixel không đủ mạnh, có thể huấn luyện một mô hình phân loại nhỏ để phân biệt giữa ô được tô và ô không được tô. Tuy nhiên, điều này làm tăng độ phức tạp.
+                    \item \textbf{Dựa vào lớp 'selected\_answer' từ YOLO (nếu đã huấn luyện):} Nếu mô hình YOLO được huấn luyện để nhận diện trực tiếp ô được chọn, thì bước này sẽ đơn giản hơn.
+                \end{itemize}
+        \end{itemize}
+    \item \textbf{Trích xuất Số báo danh và Mã đề:}
+        \begin{itemize}
+            \item \textbf{Mục đích:} Chuyển đổi hình ảnh của vùng số báo danh và mã đề (đã được YOLO nhận diện) thành dạng văn bản (text).
+            \item \textbf{Phương pháp:} Sử dụng một công cụ Nhận dạng Ký tự Quang học (Optical Character Recognition - OCR) như Tesseract OCR, EasyOCR hoặc một mô hình OCR chuyên biệt cho chữ số/ký tự viết tay (nếu cần). Cần tiền xử lý ảnh của các vùng này (ví dụ: nhị phân hóa, khử nhiễu) trước khi đưa vào OCR để cải thiện độ chính xác.
+        \end{itemize}
+    \item \textbf{Loại bỏ Nhận diện Lỗi/Nhiễu:} Áp dụng các quy tắc heuristic để loại bỏ các phát hiện không hợp lệ (ví dụ: bounding box quá nhỏ, quá lớn, hoặc không phù hợp với cấu trúc dự kiến của phiếu).
+\end{itemize}
+Kết quả của bước hậu xử lý là một cấu trúc dữ liệu rõ ràng, chứa thông tin số báo danh, mã đề và danh sách các câu trả lời đã chọn của thí sinh cho từng câu hỏi.
+
+\section{Chấm điểm (Grading)}
+\label{sec:grading}
+\textbf{Thực hiện:}
+\begin{itemize}
+    \item \textbf{Tải Đáp án Chuẩn:} Hệ thống cần truy cập vào một nguồn chứa đáp án chuẩn. Đáp án này có thể được lưu trữ trong một tệp tin (ví dụ: CSV, JSON, Excel) hoặc được cấu hình trong hệ thống, ánh xạ giữa mã đề và danh sách các đáp án đúng.
+    \item \textbf{So sánh Đáp án:} Đối với mỗi phiếu trả lời, sau khi đã trích xuất được mã đề và các câu trả lời của thí sinh:
+        \begin{enumerate}
+            \item Lấy đáp án chuẩn tương ứng với mã đề của phiếu.
+            \item So sánh tuần tự từng câu trả lời của thí sinh với đáp án chuẩn.
+            \item Ghi nhận số câu trả lời đúng.
+        \end{enumerate}
+    \item \textbf{Tính điểm:} Dựa trên số câu trả lời đúng và thang điểm (ví dụ: mỗi câu đúng được 0.25 điểm nếu có 40 câu trên thang 10), tính tổng điểm cho phiếu trả lời.
+\end{itemize}
+
+\section{Xuất Kết quả (Result Export)}
+\label{sec:result_export}
+\textbf{Thực hiện:}
+\begin{itemize}
+    \item \textbf{Tổng hợp Kết quả:} Kết quả chấm điểm của tất cả các phiếu được tổng hợp lại. Thông tin cần lưu trữ thường bao gồm: Số báo danh, Mã đề, Danh sách chi tiết các câu trả lời của thí sinh, Số câu đúng, Tổng điểm.
+    \item \textbf{Công cụ:} Thư viện Pandas trong Python rất phù hợp cho việc tạo và quản lý dữ liệu dạng bảng.
+    \item \textbf{Định dạng Xuất:} Kết quả tổng hợp được xuất ra một tệp tin, phổ biến nhất là định dạng Excel (\texttt{.xlsx}) để dễ dàng xem, phân tích và lưu trữ. Tên tệp ví dụ: \texttt{grading\_results.xlsx}.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\textwidth]{path/to/your/pipeline_flowchart.png}
+    \fbox{\parbox[c][12cm][c]{0.8\textwidth}{\centering \vspace*{5.5cm} (Sơ đồ chi tiết pipeline xử lý từ nhận diện đến xuất kết quả)}}
+    \caption{Sơ đồ chi tiết quy trình nhận diện và chấm điểm tự động.}
+    \label{fig:inference_pipeline_detail}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

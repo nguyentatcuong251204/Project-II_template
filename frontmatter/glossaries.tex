@@ -1,0 +1,63 @@
+\renewcommand{\glsmcols}{2}
+% Show only the short form in-text (do not print long form with parentheses on first use)
+% Don't expand acronyms in the text — show only the short form
+\providecommand*{\ac}[1]{\acrshort{#1}}
+\providecommand*{\acs}[1]{\acrshort{#1}}
+\providecommand*{\acp}[1]{\acrshortplural{#1}}
+\providecommand*{\acl}[1]{\acrlong{#1}}
+% \setglossarystyle{mcolindex}
+
+% \newacronym{wsn}{WSN}{wireless sensor network}
+% \newacronym{wrsn}{WRSN}{wireless rechargeable sensor network}
+% \newacronym{qos}{QoS}{Quality of Service}
+% \newacronym{ia}{IA}{intelligent agent}
+% \newacronym{rl}{RL}{reinforcement learning}
+% \newacronym{dl}{DL}{deep learning}
+% \newacronym{cnn}{CNN}{Markov decision process}
+
+%-----------
+\newacronym{ip}{IP}{Image Processing}
+\newacronym{cv}{CV}{Computer Vision}
+\newacronym{roi}{ROI}{Region of Interest}
+\newacronym{ocr}{OCR}{Optical Character Recognition}
+\newacronym{yolo}{YOLO}{You Only Look Once}
+\newacronym{nms}{NMS}{Non-Maximum Suppression}
+\newacronym{ncc}{NCC}{Normalized Cross-Correlation}
+\newacronym{rbs}{RBS}{Rule-based Systems}
+\newacronym{sift}{SIFT}{Scale-Invariant Feature Transform}
+\newacronym{flann}{FLANN}{Fast Library for Approximate Nearest Neighbors}
+\newacronym{ransac}{RANSAC}{Random Sample Consensus}
+\newacronym{gui}{GUI}{Graphical User Interface}
+\newacronym{map}{mAP}{mean Average Precision} % Chú ý 'm' viết thường
+\newacronym{tp}{TP}{True Positives}
+\newacronym{fp}{FP}{False Positives}
+\newacronym{fn}{FN}{False Negatives}
+%---------
+
+\newglossary[nlg]{notation}{not}{ntn}{Notation}
+
+\newglossaryentry{not:eth}{
+    name=\ensuremath{\tilde{E}_{td}},
+    description={energy requesting threshold},
+    type=notation}
+    
+\newglossaryentry{not:bs}{
+    name=\ensuremath{p_0},
+    description={base station},
+    type=notation}
+    
+\newglossaryentry{not:snset}{
+    name=\ensuremath{\mathcal{P}},
+    description={a set of deployed sensors},
+    type=notation}
+
+\newglossaryentry{not:num:sn}{
+    name=\ensuremath{n},
+    description={number of deployed sensors},
+    type=notation}
+    
+\newglossaryentry{not:sn}{
+    name=\ensuremath{p},
+    description={a sensor},
+    type=notation}
+    

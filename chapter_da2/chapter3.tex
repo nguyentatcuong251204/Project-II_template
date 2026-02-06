@@ -1,0 +1,11 @@
+\chapter{Khoảng trống nghiên cứu}
+
+Trong phần này, em tóm tắt các khoảng trống nghiên cứu chính liên quan đến ba nhóm phương pháp phổ biến được đề cập trong tài liệu: AE, GAN và FB.
+
+\textbf{Autoencoder (AE):} AE thường được sử dụng trong tăng cường ảnh giao thông nhờ thiết kế gọn nhẹ, phù hợp với các hệ thống giám sát hạn chế về tài nguyên. Tuy nhiên, các bộ mã hóa nông thường chỉ trích xuất được các đặc trưng cấp thấp và thất bại trong việc khôi phục các cấu trúc trung và cao cấp — vốn là yếu tố then chốt để tái tạo chi tiết tinh vi \citep{vincent2008, zhang2017}. Điều này khiến AE có xu hướng làm mờ các kết cấu nhỏ, đặc biệt là khi đối tượng mục tiêu như biển số xe chỉ chiếm một vùng nhỏ trong ảnh.
+
+\textbf{Generative Adversarial Network (GAN):} GAN giúp cải thiện độ chân thực cảm nhận (perceptual realism) với các cạnh sắc nét và kết cấu tự nhiên hơn. Tuy nhiên, chúng thường làm biến dạng độ trung thực ở mức pixel và có thể gây ra hiện tượng "ảo ảnh" tạo ra các con số giả trên biển số xe. Điều này làm giảm độ tin cậy trong các ứng dụng giao thông, nơi việc khôi phục chính xác các chi tiết như biển số và vạch kẻ đường là bắt buộc \citep{kupyn2018}.
+
+\textbf{Flow-Based (FB):} Các mô hình FB bảo toàn độ chính xác ở mức pixel bằng cách tối ưu hóa trực tiếp hàm log-likelihood, cho phép ánh xạ khả nghịch để giữ lại các chi tiết vi mô \citep{dinh2017, kingma2018}. Dù vậy, độ phức tạp tính toán cao và mức tiêu thụ bộ nhớ lớn khiến chúng khó triển khai thực tế trên các thiết bị biên (edge devices). Hiện nay, vẫn tồn tại một khoảng trống nghiên cứu trong việc phát triển các kiến trúc có khả năng cân bằng giữa hiệu suất tính toán và khả năng bảo toàn chi tiết chính xác cho tăng cường ảnh giao thông.\\
+\textbf{Tổng kết:} Khoảng trống nghiên cứu chính là thiết kế mô hình nhẹ, thời gian thực nhưng vẫn bảo toàn chi tiết
+

@@ -1,0 +1,98 @@
+\begin{thebibliography}{14}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Cover and Thomas(2006)]{cover2006}
+T.~M. Cover and J.~A. Thomas.
+\newblock \emph{Elements of Information Theory}.
+\newblock John Wiley \& Sons, 2006.
+
+\bibitem[Dinh et~al.(2017)Dinh, Sohl-Dickstein, and Bengio]{dinh2017}
+L.~Dinh, J.~Sohl-Dickstein, and S.~Bengio.
+\newblock Density estimation using real nvp.
+\newblock In \emph{International Conference on Learning Representations
+  (ICLR)}, 2017.
+
+\bibitem[Erdogmus et~al.(2003)Erdogmus, Hild, and Principe]{erdogmus2003}
+D.~Erdogmus, K.~E. Hild, and J.~C. Principe.
+\newblock Online entropy manipulation: Stochastic information gradient.
+\newblock \emph{IEEE Signal Processing Letters}, 10\penalty0 (8):\penalty0
+  242--245, 2003.
+
+\bibitem[Gabrie et~al.(2018)Gabrie, Manoel, Luneau, Macris, Krzakala, and
+  Zdeborova]{gabrie2018}
+M.~Gabrie, A.~Manoel, C.~Luneau, N.~Macris, F.~Krzakala, and L.~Zdeborova.
+\newblock Entropy and mutual information in models of deep neural networks.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~31, 2018.
+
+\bibitem[He et~al.(2016)He, Zhang, Ren, and Sun]{he2016deep}
+K.~He, X.~Zhang, S.~Ren, and J.~Sun.
+\newblock Deep residual learning for image recognition.
+\newblock In \emph{Proceedings of the IEEE CVPR}, 2016.
+
+\bibitem[Kingma and Dhariwal(2018)]{kingma2018}
+D.~P. Kingma and P.~Dhariwal.
+\newblock Glow: Generative flow with invertible 1x1 convolutions.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2018.
+
+\bibitem[Kupyn et~al.(2018)Kupyn, Budzan, Mykhailych, Mishkin, and
+  Matas]{kupyn2018}
+O.~Kupyn, V.~Budzan, M.~Mykhailych, D.~Mishkin, and J.~Matas.
+\newblock Deblurgan: Blind motion deblurring using conditional adversarial
+  networks.
+\newblock In \emph{Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition (CVPR) Workshops}, 2018.
+
+\bibitem[Ledig et~al.(2017)Ledig, Theis, Husz{\'a}r, Caballero, Cunningham,
+  Acosta, Aitken, Tejani, Totz, Wang, and Shi]{ledig2017photo}
+C.~Ledig, L.~Theis, F.~Husz{\'a}r, J.~Caballero, A.~Cunningham, A.~Acosta,
+  A.~Aitken, A.~Tejani, J.~Totz, Z.~Wang, and W.~Shi.
+\newblock Photo-realistic single image super-resolution using a generative
+  adversarial network.
+\newblock In \emph{Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition (CVPR)}, 2017.
+
+\bibitem[Meni et~al.(2023)Meni, White, Mayo, and Pilkiewicz]{meni2023}
+M.~J. Meni, R.~T. White, M.~L. Mayo, and K.~R. Pilkiewicz.
+\newblock Entropy-based guidance of deep neural networks for accelerated
+  convergence and improved performance.
+\newblock \emph{Information Sciences}, 681, 2023.
+
+\bibitem[Principe et~al.(2000)Principe, Xu, Zhao, and Fisher]{principe2000}
+J.~C. Principe, D.~Xu, Q.~Zhao, and J.~W. Fisher.
+\newblock Learning from examples with information theoretic criteria.
+\newblock \emph{Journal of VLSI Signal Processing Systems for Signal, Image,
+  and Video Technology}, 26\penalty0 (1):\penalty0 61--77, 2000.
+
+\bibitem[Shannon(1948)]{shannon1948}
+C.~E. Shannon.
+\newblock A mathematical theory of communication.
+\newblock \emph{The Bell System Technical Journal}, 27\penalty0 (3):\penalty0
+  379--423, 1948.
+
+\bibitem[Tishby et~al.(1999)Tishby, Pereira, and Bialek]{tishby1999}
+N.~Tishby, F.~C. Pereira, and W.~Bialek.
+\newblock The information bottleneck method.
+\newblock In \emph{Proceedings of the 37th Annual Allerton Conference on
+  Communication, Control, and Computing}, pages 368--377, 1999.
+
+\bibitem[Vincent et~al.(2008)Vincent, Larochelle, Bengio, and
+  Manzagol]{vincent2008}
+P.~Vincent, H.~Larochelle, Y.~Bengio, and P.-A. Manzagol.
+\newblock Extracting and composing robust features with denoising autoencoders.
+\newblock In \emph{Proceedings of the 25th International Conference on Machine
+  Learning (ICML)}, pages 1096--1103, 2008.
+
+\bibitem[Zhang et~al.(2017)Zhang, Zuo, Chen, Meng, and Zhang]{zhang2017}
+K.~Zhang, W.~Zuo, Y.~Chen, D.~Meng, and L.~Zhang.
+\newblock Beyond a gaussian denoiser: Residual learning of deep cnn for image
+  denoising.
+\newblock \emph{IEEE Transactions on Image Processing}, 26\penalty0
+  (7):\penalty0 3142--3155, 2017.
+
+\end{thebibliography}

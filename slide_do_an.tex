@@ -1,0 +1,126 @@
+%!TEX TS-program = xelatex
+\documentclass[aspectratio=169]{beamer}
+\usepackage{tikz}
+\usepackage{calc}
+% \usepackage{polyglossia}
+% \setmainlanguage{vietnamese}
+% Thay thế bằng fontspec để tránh lỗi polyglossia
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\usepackage{amsthm,amsmath,amssymb}
+\newtheorem{thm}{Định lý}
+\newtheorem{defn}{Định nghĩa}
+\usepackage{subcaption}
+\setbeamertemplate{theorems}[numbered]
+
+%% TYPESET
+\makeatletter
+\newcommand{\leqnomode}{\tagsleft@true}
+\newcommand{\reqnomode}{\tagsleft@false}
+\makeatother
+\let\Mathcal\mathcal
+% \usepackage{dutchcal}  % Commented out to avoid font errors
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+\newcommand{\gr}{\operatorname{gr}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\toto}{\rightrightarrows}%
+\newcommand{\F}{\Mathcal{F}}%
+\newcommand{\K}{\mathbb{K}}%
+\newcommand{\R}{\mathbb{R}}%
+\def\C{\mathbb{C}}%
+\newcommand{\dom}{\operatorname{dom}}%
+% \newcommand{\ker}{\operatorname{ker}}% already defined
+\newcommand{\im}{\operatorname{im}}%
+\newcommand{\g}{\mathcal{g}}%
+\global\long\def\MP{\text{mp}}%
+
+\newcommand{\Image}[1]{%
+	\sbox0{\includegraphics[height=0.65\paperheight]{#1}}%
+	\ifdim\wd0 < \textwidth
+	\includegraphics[height=0.65\paperheight]{#1}%
+	\else
+	\includegraphics[width=\textwidth]{#1}%
+	\fi%
+}
+
+
+\newif\iffirsttoc
+\firsttoctrue
+\AtBeginSection[]
+{
+    \begin{frame}
+        \frametitle{Mục lục}  
+        \iffirsttoc
+            \tableofcontents
+            \global\firsttocfalse
+        \else
+            \tableofcontents[currentsection,
+            % hideothersubsections,
+            subsectionstyle=show/shaded/hide,
+            subsubsectionstyle=show/show/show/hide
+            ]
+        \fi
+    \end{frame} 
+}
+
+\setbeamertemplate{caption}[numbered]
+
+\usetheme{hust}
+% \titlegraphic{\includegraphics[height=\logoheight]{figures/sami-v2.pdf}}
+\title{Đồ án II}
+\subtitle{\textbf{VRAE: Cải tiến bộ mã hóa tự động \\ khử nhiễu và khử mờ cho biển số xe}}
+% \subtitle{\textbf{khử nhiễu và khử mờ cho biển số xe}}
+
+\author{Sinh viên thực hiện: Nguyễn Tất Cường - 202227090\\Giảng viên hướng dẫn: TS. Trần Ngọc Thăng\\Khoa Toán Tin -- Đại học Bách Khoa Hà Nội}
+\date{Tháng 01, 2026}
+
+\begin{document}
+\begin{frame}[noframenumbering,Title]
+	\maketitle
+\end{frame}
+
+\section{Đặt vấn đề}
+\input{slide_parts/introduction.tex}
+
+\section{Phát biểu bài toán}
+\input{slide_parts/problem_formulation.tex}
+
+\section{Khoảng trống nghiên cứu}
+\input{slide_parts/gap.tex}
+
+\section{Phương pháp đề xuất}
+\input{slide_parts/method.tex}
+
+\section{Kết quả thực nghiệm}
+\input{slide_parts/results.tex}
+
+\section{Hướng phát triển tương lai}
+\input{slide_parts/future_work.tex}
+
+\section{Kết luận}
+\input{slide_parts/conclusion.tex}
+
+
+% \section{Tài liệu tham khảo}
+\begin{frame}{Tài liệu tham khảo}
+    \nocite{vincent2008, goodfellow2014, kingma2018, shannon1948}
+    \bibliographystyle{plain}
+    \bibliography{refs.bib}
+\end{frame}
+
+\begin{frame}{~}
+    \centering
+    \Large \color{hustred}{Cảm ơn Thầy Cô và các bạn đã chú ý lắng nghe!}
+\end{frame}
+
+
+\end{document}
+
+
+
+
+
+
+
+

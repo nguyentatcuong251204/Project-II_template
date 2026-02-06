@@ -1,0 +1,61 @@
+
+\chapter{Bài toán khử nhiễu và khử mờ cho ảnh phương tiện có biển số xe}
+
+\section{Giới thiệu}
+Trong nhiều ứng dụng thực tế như hệ thống giám sát giao thông, nhận dạng biển số tự động và các hệ thống an ninh, chất lượng ảnh thu được thường bị suy giảm do nhiều nguyên nhân: điều kiện ánh sáng kém, chuyển động nhanh của phương tiện, rung lắc camera, hoặc giới hạn của cảm biến. Những suy giảm phổ biến nhất là nhiễu  và mờ. Khử nhiễu và khử mờ là các bước tiền xử lý then chốt để phục hồi hình ảnh có độ nét và độ tương phản cao, từ đó cải thiện hiệu suất các tác vụ hạ tầng như nhận diện ký tự (OCR) trên biển số.
+
+\textbf{Tính cần thiết của bài toán}
+Biển số xe là vùng nhỏ, chứa thông tin nhạy cảm và cần độ chính xác cao khi nhận diện. Một biển số bị mờ hoặc nhiễu có thể khiến hệ thống ANPR sai lệch, dẫn đến hậu quả trong quản lý giao thông, xử lý vi phạm, hoặc điều tra an ninh. Do đó, phát triển phương pháp khử nhiễu và khử mờ hiệu quả cho ảnh phương tiện có biển số là cần thiết để:
+\begin{itemize}
+\item Tăng tỉ lệ nhận diện ký tự đúng.
+\item Giảm sai số trong các hệ thống theo dõi và truy vết.
+\item Thu nhỏ kích thước mô hình khi triển khai trên thiết bị nhúng mà vẫn giữ được chất lượng phục hồi.
+\end{itemize}
+
+\section{Phát biểu bài toán}
+Cho một ảnh quan sát $Y$ chứa phương tiện và vùng biển số bị suy giảm do nhiễu và/hoặc mờ, mục tiêu là tìm một ảnh ước lượng $\hat{X}$ gần với ảnh nguyên gốc $X$ (chưa bị suy giảm). Mô hình tổng quát có thể được viết:
+
+\begin{equation}
+Y = K * X + N,
+\end{equation}
+
+trong đó $K$ là hạt nhân làm mờ (blur kernel), $*$ biểu diễn phép nhân chập, và $N$ là thành phần nhiễu (ví dụ: Gaussian noise, Poisson noise, hoặc nhiễu phụ thuộc cảm biến). Nhiệm vụ khử mờ và khử nhiễu là ước lượng $\hat{X}$ và — nếu cần thiết — ước lượng $K$ từ $Y$.
+
+\textbf{Đặc điểm và thách thức}
+Bài toán khử nhiễu, khử mờ cho ảnh phương tiện có biển số có những thách thức đặc thù:
+\begin{itemize}
+\item \textbf{Kích thước vùng quan tâm nhỏ}: Biển số chiếm phần nhỏ trong ảnh toàn cảnh, do đó phương pháp phải bảo toàn chi tiết ở vùng biển số mà không làm mịn quá mức.
+\item \textbf{Mờ chuyển động và mờ do khẩu độ}: Mờ có thể do chuyển động nhanh của xe hoặc do sai nét — hai loại mờ này có đặc tính khác nhau và cần xử lý khác biệt.
+\item \textbf{Nhiễu phi chuẩn và điều kiện ánh sáng thay đổi}: Nhiễu thực tế không luôn tuân theo phân phối Gaussian chuẩn; ngoài ra bóng đổ, phản xạ, và điều kiện ánh sáng yếu làm tăng độ khó.
+\item \textbf{Yêu cầu thời gian thực và tài nguyên giới hạn}: Ứng dụng triển khai trên camera giao thông hoặc thiết bị nhúng yêu cầu thuật toán có độ trễ thấp và tiêu thụ bộ nhớ/điện năng nhỏ.
+\item \textbf{Đòi hỏi giữ chi tiết ký tự}: Việc khử nhiễu/mờ phải bảo toàn các cạnh sắc và nét chữ để không làm ảnh hưởng đến hiệu suất OCR.
+\end{itemize}
+
+\textbf{Mục tiêu nghiên cứu}
+Trong bối cảnh giới thiệu này, mục tiêu tổng quát của nghiên cứu có thể tóm tắt như sau:
+\begin{enumerate}
+\item Đề xuất hoặc lựa chọn phương pháp khử nhiễu và khử mờ hiệu quả cho ảnh phương tiện, tập trung vào việc bảo toàn chi tiết vùng biển số.
+\item Tối ưu hóa mô hình về số tham số và chi phí tính toán để phù hợp triển khai trên thiết bị thực tế.
+\item Đánh giá hiệu quả bằng các chỉ số ảnh kỹ thuật (PSNR, SSIM) và tỷ lệ nhận diện biển số sau xử lý.
+\end{enumerate}
+
+\textbf{Chỉ số đánh giá}
+Hiệu quả phương pháp thường được đánh giá bằng:
+\begin{itemize}
+\item \textbf{PSNR} (Peak Signal-to-Noise Ratio), \textbf{SSIM} (Structural Similarity Index), \textbf{NMSE} (Normalized Mean Squared Error) cho chất lượng phục hồi tổng quát.
+\item \textbf{Thời gian xử lý và kích thước mô hình} khi triển khai.
+\end{itemize}
+
+\section{Khoảng trống nghiên cứu}
+
+Trong phần này, em tóm tắt các khoảng trống nghiên cứu chính liên quan đến ba nhóm phương pháp phổ biến được đề cập trong tài liệu: AE, GAN và FB.
+
+\textbf{Autoencoder (AE):} AE thường được sử dụng trong tăng cường ảnh giao thông nhờ thiết kế gọn nhẹ, phù hợp với các hệ thống giám sát hạn chế về tài nguyên. Tuy nhiên, các bộ mã hóa nông thường chỉ trích xuất được các đặc trưng cấp thấp và thất bại trong việc khôi phục các cấu trúc trung và cao cấp — vốn là yếu tố then chốt để tái tạo chi tiết tinh vi \citep{vincent2008, zhang2017}. Điều này khiến AE có xu hướng làm mờ các kết cấu nhỏ, đặc biệt là khi đối tượng mục tiêu như biển số xe chỉ chiếm một vùng nhỏ trong ảnh.
+
+\textbf{Generative Adversarial Network (GAN):} GAN giúp cải thiện độ chân thực cảm nhận (perceptual realism) với các cạnh sắc nét và kết cấu tự nhiên hơn. Tuy nhiên, chúng thường làm biến dạng độ trung thực ở mức pixel và có thể gây ra hiện tượng ``ảo ảnh'' tạo ra các con số giả trên biển số xe. Điều này làm giảm độ tin cậy trong các ứng dụng giao thông, nơi việc khôi phục chính xác các chi tiết như biển số và vạch kẻ đường là bắt buộc \citep{kupyn2018}.
+
+\textbf{Flow-Based (FB):} Các mô hình FB bảo toàn độ chính xác ở mức pixel bằng cách tối ưu hóa trực tiếp hàm log-likelihood, cho phép ánh xạ khả nghịch để giữ lại các chi tiết vi mô \citep{dinh2017, kingma2018}. Dù vậy, độ phức tạp tính toán cao và mức tiêu thụ bộ nhớ lớn khiến chúng khó triển khai thực tế trên các thiết bị biên (edge devices). Hiện nay, vẫn tồn tại một khoảng trống nghiên cứu trong việc phát triển các kiến trúc có khả năng cân bằng giữa hiệu suất tính toán và khả năng bảo toàn chi tiết chính xác cho tăng cường ảnh giao thông.\\
+\textbf{Tổng kết:} Khoảng trống nghiên cứu chính là thiết kế mô hình nhẹ, thời gian thực nhưng vẫn bảo toàn chi tiết
+
+% Hết chương
+
