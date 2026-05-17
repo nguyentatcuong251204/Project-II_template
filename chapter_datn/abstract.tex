@@ -1,0 +1,17 @@
+\abstractpage[vi]{
+\phantomsection
+\addcontentsline{toc}{chapter}{Tóm tắt nội dung đồ án}
+Bài toán Quy hoạch mở rộng nguồn điện (Generation Expansion Planning - GEP) đóng vai trò then chốt trong việc đảm bảo an ninh năng lượng và tối ưu hóa chi phí đầu tư hệ thống điện. Các phương pháp truyền thống dựa trên Quy hoạch tuyến tính nguyên hỗn hợp (MILP) thường đối mặt với thách thức về tốc độ tính toán khi mở rộng quy mô, trong khi các mô hình Học tăng cường (RL) thuần túy lại khó đảm bảo các ràng buộc vật lý khắt khe của hệ thống. 
+
+Đề tài này đề xuất một kiến trúc tối ưu hóa lai hai tầng (Bi-level Hybrid Optimization) nhằm kết hợp ưu điểm của cả hai cách tiếp cận. Tầng trên sử dụng các thuật toán AI tiên tiến như Tối ưu hóa Bayes (Bayesian Optimization) và Học tăng cường (PPO, SAC) để tìm kiếm phương án đầu tư tối ưu trong không gian tham số rộng lớn. Tầng dưới thực hiện bài toán Điều độ kinh tế (Economic Dispatch) dựa trên Quy hoạch tuyến tính (LP) để đảm bảo tính khả thi vật lý và tính toán chi phí vận hành chi tiết. Hệ thống được thực hiện trên bộ dữ liệu thực tế WECC 180-bus kết hợp với các thông số công nghệ từ NREL ATB 2024. 
+
+Kết quả thực nghiệm cho thấy mô hình không chỉ hội tụ nhanh chóng mà còn cung cấp các phương án quy hoạch có tính thực tiễn cao, cân bằng giữa hiệu quả kinh tế và độ tin cậy vận hành. Pipeline phát triển có cấu trúc module linh hoạt, cho phép mở rộng và ứng dụng vào các kịch bản thực tế phức tạp khác nhau.
+}
+
+\abstractpage[en]{
+The Generation Expansion Planning (GEP) problem plays a crucial role in ensuring energy security and optimizing power system investment costs. Traditional methods based on Mixed-Integer Linear Programming (MILP) often face computational challenges when scaling up, while pure Reinforcement Learning (RL) models struggle to guarantee strict physical constraints of the power system.
+
+This thesis proposes a Bi-level Hybrid Optimization architecture that combines the advantages of both approaches. The upper level utilizes advanced AI algorithms such as Bayesian Optimization and Reinforcement Learning (PPO, SAC) to search for optimal investment strategies within a large parameter space. The lower level performs the Economic Dispatch problem based on Linear Programming (LP) to ensure physical feasibility and calculate detailed operational costs. The system is implemented on the realistic WECC 180-bus dataset combined with technical parameters from the NREL ATB 2024.
+
+Experimental results demonstrate that the model not only converges rapidly but also provides practical planning alternatives, balancing economic efficiency and operational reliability. The developed pipeline features a flexible modular structure, allowing for expansion and application to various complex real-world scenarios.
+}

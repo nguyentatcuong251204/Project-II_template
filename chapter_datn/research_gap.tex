@@ -1,0 +1,71 @@
+\chapter{Khoảng trống nghiên cứu và Mục tiêu đề tài}
+\label{chap:research_gap}
+
+Dựa trên cơ sở lý thuyết đã trình bày, đặc biệt là cấu trúc tối ưu hóa hai tầng (Bi-level Optimization), chương này tiến hành phân tích sâu vào bản chất toán học của các hệ phương trình cốt lõi để nhận diện giới hạn của các phương pháp hiện hành. Từ đó, khoảng trống nghiên cứu được định hình, đóng vai trò bản lề cho phương pháp tiếp cận lai (Hybrid AI-Math) của đề tài.
+
+% ================================================================
+\section{Định hình toán học và giới hạn của các phương pháp hiện hành}
+% ================================================================
+
+Theo cơ sở lý thuyết, lõi của bài toán lập kế hoạch hệ thống điện (GEP) được đặc trưng qua mô hình tối ưu hai tầng, với phương trình hàm mục tiêu tầng trên \eqref{eq:bilevel_upper} và phương trình tối ưu vận hành tầng dưới \eqref{eq:bilevel_lower}. Ta sẽ phân tích các phương pháp tiếp cận hiện hành dựa trên chính hệ phương trình \eqref{eq:bilevel_upper} và \eqref{eq:bilevel_lower}:
+
+\begin{itemize}
+    \item \textbf{Phương pháp Toán học truyền thống (LP/MILP):} 
+    Cách tiếp cận này coi toàn bộ các hàm số định dạng nên $F(\mathbf{x}, \mathbf{y})$, $f(\mathbf{x}, \mathbf{y}')$, và điều kiện $g(\mathbf{x}, \mathbf{y}') \leq 0$ là \textbf{các hàm đã biết (known analytical functions)}. Các bộ giải (solver) sẽ hợp nhất cả cấu trúc ràng buộc \eqref{eq:bilevel_lower} thẳng vào \eqref{eq:bilevel_upper} để giải quyết bằng cách sử dụng tập điều kiện KKT (Karush-Kuhn-Tucker). Mặc dù toán học cho kết quả chính xác tuyệt đối, nhưng khi đối mặt với lượng biến tổ hợp $\mathbf{x}$ (dữ liệu đầu tư xây mới) và không gian liên tục khổng lồ $\mathbf{y}$ (dòng công suất đa khung giờ đa nút), bài toán rơi vào giới hạn \textit{NP-hard} theo hàm mũ (hiện tượng Curse of Dimensionality). Việc cố gắng đảo ma trận Hesse/Jacobi cho dạng hàm siêu việt này khiến các solver hiện đại nhất cũng cạn kiệt tài nguyên (Out of Memory) và thất bại trong việc hội tụ.
+    
+    \item \textbf{Phương pháp Trí tuệ nhân tạo (Pure AI/RL):} 
+    Để lách qua bài toán kích thước ma trận, cấu trúc Học máy theo tư duy End-to-End coi toàn bộ khối lượng \eqref{eq:bilevel_upper} và \eqref{eq:bilevel_lower} là một \textbf{hàm chưa biết/hàm hộp đen (unknown function)}. Các hệ thống AI thuần túy sẽ bỏ qua khâu phương pháp giải tích tầng dưới mà sử dụng mạng nơ-ron để xấp xỉ ánh xạ $\mathbf{x} \mapsto F$. Bằng cách đó, các định luật vật lý nền tảng $g(\mathbf{x}, \mathbf{y}') \leq 0$ (vốn là các phương trình bảo toàn dòng điện Kirchhoff, giới hạn truyền sức dẫn - là những cụm quy định \textit{kỹ thuật chắc chắn và đã biết}) bị AI phân rã thành các "hàm phạt mềm" (soft penalty). Việc thay thế cụm "hàm vật lý cốt tử" bằng một "hàm xấp xỉ xác suất có sai số" khiến nghiệm bài toán AI luôn có rủi ro gây quá tải đường dây hoặc đứt mạch hệ thống trong thực tiễn.
+    
+    \item \textbf{Hạn chế tĩnh tại kinh tế:}
+    Bên cạnh đó, việc tính hàm mục tiêu $F(\mathbf{x}, \mathbf{y})$ dựa trên sự tổng hợp CAPEX thập kỷ tĩnh và chi phí vận hành đa khung giờ tĩnh là một sự lệch pha đa miền. Các phương thức thiếu một nhân tử đồng hóa không thời gian thích hợp. Ngoài ra, việc giải tĩnh bài toán bỏ qua kỳ vọng $\mathbb{E}_\xi$ nơi mà vector nhiễu ngẫu nhiên $\xi$ (mưa, nắng, mất điện) đóng vai trò quyết định cấu trúc lưới điện vững vàng.
+\end{itemize}
+
+% ================================================================
+\section{Khoảng trống nghiên cứu cốt lõi}
+% ================================================================
+
+Phân tích toán học chuyên sâu từ \eqref{eq:bilevel_upper} và \eqref{eq:bilevel_lower} đã chỉ rõ sự khuyết điểm bản chất: \textbf{Hệ thống đương đại chưa có một cấu trúc "kết ghép" toàn diện, phân định rạch ròi phân mảnh "Hàm chưa biết / Cần khám phá lớn" (dành riêng cho quyết định đầu tư cực rộng) và "Hàm đã biết / Tuyến tính bảo toàn vật lý" (dành riêng cho quyết định vận hành thời gian thực).}
+
+Việc ép một môi trường xác suất (AI) tự học lại các định luật vật lý cứng $g(\mathbf{x}, \mathbf{y}) \leq 0$, hay ép một Solver tuyến tính/nguyên cõng trên mình hàm đa diện thời gian vô cực $F(\mathbf{x}, \mathbf{y})$ là hai tiếp cận cực đoan, khai thác sai sở trường của công cụ. Khoảng trống này chính là nguồn cội đòi hỏi phải xây dựng nên phần \textit{Kiến trúc Lai (Hybrid Math-AI Architecture)}.
+
+% ================================================================
+\section{Cách tiếp cận nhằm biến đổi toán học và lấp đầy khoảng trống}
+% ================================================================
+
+Đề tài lấp đầy lỗ hổng cấu trúc trên nhờ vào tư duy tái biên dịch thiết kế hệ phương trình \eqref{eq:bilevel_upper} và \eqref{eq:bilevel_lower}:
+
+\subsection{Tầng dưới: Cơ chế tuyệt đối hóa "Hàm đã biết" bằng Quy hoạch tuyến tính (LP)}
+Đi sâu trích xuất biểu thức \eqref{eq:bilevel_lower}, thay vì xấp xỉ AI, tầng dưới nhận véctơ $\mathbf{x}$ như một hằng số cố định. Lúc này phương trình \eqref{eq:bilevel_lower} biến thuần thành quy hoạch tuyến tính (LP) tập trung chuyên giải biến điều độ $\mathbf{y}$:
+\begin{equation} \label{eq:lower_lp_new}
+    C_{\mathrm{op}}^*(\mathbf{x}) = \min_{\mathbf{y}} \; \mathbf{c}^\top \mathbf{y}
+\end{equation}
+với các ràng buộc vật lý thuần túy là ma trận \textbf{tuyến tính đã biết}: 
+\begin{equation*}
+    g(\mathbf{x}, \mathbf{y}) \leq 0 \Rightarrow A\mathbf{y} = \mathbf{b}(\mathbf{x}), \quad G\mathbf{y} \leq \mathbf{d}(\mathbf{x})
+\end{equation*}
+Sử dụng LP (HiGHS Solver) trên vùng không gian hoàn toàn \textbf{đã biết} này, lời giải ma trận lưu lượng và lượng quá tải $\Delta L$ sẽ được trả về với sự tự tin tuyệt đối. Đề tài bóc tách được bài toán sao cho các định luật Kirchhoff cấu tạo nên hệ thần kinh lưới điện nguyên vẹn $100\%$, dứt điểm yếu huyệt của phương pháp Pure AI truyền thống.
+
+\subsection{Tầng trên: Định tuyến không gian "Hàm chưa biết / Hộp đen" bằng AI}
+Dựa vào giá trị chi phí vận hành cận biên $C_{\mathrm{op}}^*(\mathbf{x})$ được trả về vô hướng từ solver bên dưới, cấu trúc \eqref{eq:bilevel_upper} biến dung hợp thành hàm mục tiêu mạng lưới cuối cùng:
+\begin{equation} \label{eq:upper_box_new}
+    \Phi(\mathbf{x}) = C_{\mathrm{inv}}(\mathbf{x}) + C_{\mathrm{op}}^*(\mathbf{x})
+\end{equation}
+Tại không gian tầng trên, do thủ tục lấy giá trị $C_{\mathrm{op}}^*(\mathbf{x})$ được thực hiện qua bộ giải ngầm nên hoàn toàn mất dấu giải tích, suy ra đạo hàm gradient $\nabla_{\mathbf{x}} \Phi(\mathbf{x})$ không xác định. $\Phi(\mathbf{x})$ giờ đây bản chất chính là một \textbf{hàm chưa biết / hàm hộp đen (black-box function)}.
+Đây chính là "đất diễn" lý tưởng cho năng lực AI:
+\begin{itemize}
+    \item \textbf{Tối ưu hóa Bayes (BO-TPE):} Không cần tới gradient, BO phân tích $\Phi(\mathbf{x})$ bằng sự hỗ trợ của mô hình phân phối xác suất tiên nghiệm $p(\Phi | \mathbf{x})$. Tối ưu hàm thu thập (Acquisition Function) sẽ tự động sinh ra tọa độ đánh giá $\mathbf{x}$ tiềm năng bậc nhất với mẫu thử nhỏ nhất.
+    \item \textbf{Học tăng cường (RL - PPO / SAC):} Bao gói $\mathbf{x}$ vào một cơ sở MDP (Markov Decision Process) với tín hiệu lợi tức $r = - \Phi(\mathbf{x})$. RL khai phá dải không gian khổng lồ bằng policy $\pi_\theta$ quét nghiệm thông minh, không e ngại bất cứ "sự bùng nổ ma trận tổ hợp" nào mà các công cụ toán học MILP từng khiếp sợ.
+\end{itemize}
+
+\subsection{Hoàn thiện hệ hàm kinh tế -- kỳ vọng ngẫu nhiên}
+Góc khuyết hệ thống cuối cùng liên quan tới rủi ro kỳ vọng được hoàn thiện nhờ:
+\begin{itemize}
+    \item \textbf{Nhân tử hóa đường chéo vốn (CRF):} Quy đổi trực tiếp lượng hằng số tổng $C_{\mathrm{inv}}$ sang dạng cấp số niên kim qua nhân tử $\mathrm{CRF}$. Đảm bảo tính cân bằng thứ nguyên với biên chi phí vận hành $C_{\mathrm{op}}$.
+    \item \textbf{Cực tiểu hóa kỳ vọng Monte Carlo:} Đối mặt với sự hỗn mang về số liệu nắng, gió hay cúp điện cục bộ (nhiễu $\xi$), hàm tối ưu thiết kế biến thiên hội tụ quanh giá trị xác suất kỳ vọng của $\mathbb{E}_{\xi}$:
+    \begin{equation*}
+        \mathbf{x}^* = \arg\min_{\mathbf{x}} \left( \mathrm{CRF} \cdot C_{\mathrm{inv}}(\mathbf{x}) + \mathbb{E}_{\xi \sim \mathbf{P}} \left[ C_{\mathrm{op}}^*(\mathbf{x}, \xi) \right] \right)
+    \end{equation*}
+    Đây là khung gầm bảo đảm mọi tọa độ mạng mới $\mathbf{x}^*$ không chỉ rẻ nhất mà còn có sức chống chịu mạnh mẽ nhất, khỏa lấp tận cùng khoảng trống của các góc nhìn tĩnh.
+\end{itemize}
+
+Thông qua sự tái thiết hàm số trực diện bắt rễ từ cấu trúc Bi-level Optimization \eqref{eq:bilevel_upper} và \eqref{eq:bilevel_lower}, đề tài xác lập cơ chế lai chéo để đập tan giới hạn hệ chiều ma trận bằng AI, và đồng thời duy trì kỷ luật vật lý bằng Toán học giải tích.

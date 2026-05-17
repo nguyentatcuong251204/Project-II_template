@@ -1,0 +1,47 @@
+\chapter{Giới thiệu}
+
+\section{Bối cảnh và tầm quan trọng của đề tài}
+
+Hệ thống điện đóng vai trò then chốt trong nền kinh tế hiện đại, cung cấp năng lượng cho các hoạt động sản xuất, kinh doanh và sinh hoạt, đồng thời đòi hỏi quá trình vận hành và quy hoạch phải được thực hiện một cách tin cậy và hiệu quả \cite{wood2013powersystems,koltsaklis2018gep}. Cùng với sự gia tăng nhu cầu phụ tải, xu hướng tích hợp năng lượng tái tạo và các công nghệ phát điện sạch ở quy mô lớn đang làm thay đổi đáng kể cấu trúc và yêu cầu vận hành của hệ thống điện hiện đại \cite{oree2017gep_review,nrel2024atb}.
+
+Bài toán Quy hoạch mở rộng nguồn điện (Generation Expansion Planning - GEP) là một trong những bài toán trung tâm của quy hoạch hệ thống điện. GEP nhằm xác định phương án đầu tư xây dựng các nguồn phát điện mới một cách tối ưu, cân bằng giữa chi phí đầu tư, chi phí vận hành và độ tin cậy cung cấp điện \cite{koltsaklis2018gep,sadeghi2017gep_review}. Trong bối cảnh biến đổi khí hậu và chuyển dịch năng lượng, GEP không chỉ cần đảm bảo an ninh năng lượng mà còn phải hỗ trợ quá trình tích hợp năng lượng tái tạo và đáp ứng các mục tiêu phát triển bền vững \cite{oree2017gep_review}.
+
+Các phương pháp truyền thống để giải quyết GEP chủ yếu dựa trên Quy hoạch tuyến tính nguyên hỗn hợp (Mixed-Integer Linear Programming - MILP) và các biến thể tối ưu hóa toán học chính xác \cite{koltsaklis2018gep,sadeghi2017gep_review}. Tuy nhiên, khi quy mô hệ thống tăng lên và mức độ bất định do năng lượng tái tạo ngày càng lớn, các phương pháp này thường gặp phải những hạn chế sau \cite{oree2017gep_review}:
+
+\begin{itemize}
+    \item Khó khăn trong việc xử lý các ràng buộc phi tuyến tính phức tạp
+    \item Thời gian tính toán tăng theo cấp số nhân khi quy mô hệ thống lớn
+    \item Khó thích ứng với sự biến động của các thông số đầu vào như giá nhiên liệu, công nghệ mới
+    \item Thường bỏ qua các yếu tố không chắc chắn trong tương lai
+\end{itemize}
+
+Mặt khác, các phương pháp trí tuệ nhân tạo (AI), đặc biệt là Học tăng cường (Reinforcement Learning - RL), đã cho thấy hiệu quả trong các bài toán ra quyết định tuần tự và tối ưu hóa trong không gian hành động phức tạp \cite{sutton2018rl,schulman2017ppo,haarnoja2018sac}. Tuy nhiên, việc áp dụng RL thuần túy vào GEP cũng gặp phải những thách thức:
+
+\begin{itemize}
+    \item Khó đảm bảo các ràng buộc vật lý khắt khe của hệ thống điện
+    \item Yêu cầu lượng dữ liệu huấn luyện lớn
+    \item Khó hội tụ trong không gian tìm kiếm rộng lớn
+\end{itemize}
+
+\section{Mục tiêu nghiên cứu}
+
+Đề tài này nhằm phát triển một mô hình tối ưu hóa lai hai tầng (Bi-level Hybrid Optimization) kết hợp ưu điểm của cả MILP và RL để giải quyết bài toán GEP một cách hiệu quả. Cụ thể, các mục tiêu chính bao gồm:
+
+\begin{enumerate}
+    \item Phát triển kiến trúc tối ưu hóa lai hai tầng tích hợp Bayesian Optimization và Reinforcement Learning ở tầng trên với Linear Programming ở tầng dưới \cite{shahriari2016bo_survey,sutton2018rl}
+    \item Đánh giá hiệu suất của mô hình trên bộ dữ liệu thực tế WECC 180-bus \cite{zhang2023dataset}
+    \item So sánh với các phương pháp truyền thống và hiện đại khác
+    \item Phát triển pipeline tính toán có cấu trúc module linh hoạt cho các ứng dụng thực tế
+\end{enumerate}
+
+\section{Phạm vi nghiên cứu}
+
+Đề tài tập trung vào các nội dung chính sau:
+
+\begin{itemize}
+    \item Nghiên cứu lý thuyết về bài toán GEP và các phương pháp giải quyết \cite{koltsaklis2018gep,sadeghi2017gep_review}
+    \item Phát triển thuật toán tối ưu hóa lai hai tầng
+    \item Thực nghiệm trên hệ thống WECC 180-bus với các kịch bản khác nhau \cite{zhang2023dataset}
+    \item Phân tích độ nhạy và độ tin cậy của các phương án quy hoạch
+\end{itemize}
+ 

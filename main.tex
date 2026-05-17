@@ -1,4 +1,4 @@
-%!TEX TS-program = xelatex
+% !TEX TS-program = pdflatex
 \documentclass[vi]{hust-thesis} % use [vi] for vietnamese
 
 % --- CẬP NHẬT CẤU HÌNH TEMPLATE (Dựa trên dự đoán chuẩn chung) ---
@@ -22,7 +22,7 @@
 
 \usepackage{makeidx}
 \usepackage{blindtext}
-\title{VRAE: Bộ mã hóa tự động dư dọc để khử nhiễu và khử mờ cho biển số xe}
+\title{Mô hình Meta-learning tối ưu vận hành hệ thống điện}
 \author{Nguyễn Tất Cường}
 \authoremail{cuong.nt227090@sis.hust.edu.vn}
 \major{Toán Tin}
@@ -30,16 +30,16 @@
 \advisor{TS. Trần Ngọc Thăng}
 \department{Toán Tin}
 \institute{Khoa Toán Tin}
-\degree{Đồ án II}
+\degree{Đồ án tốt nghiệp}
 \university{Đại học Bách Khoa Hà Nội}
 \universitycity{Hà Nội}
 \universitystate{Hà Nội}
-\degreemonth{10}
-\degreeyear{2025}
+\degreemonth{06}
+\degreeyear{2026}
 
 
-\input{frontmatter/glossaries}
-\makeglossaries 
+% \input{frontmatter/glossaries}
+% \makeglossaries 
 \setcounter{tocdepth}{2}
 \usepackage{indentfirst} % thụt lề 
 \usepackage{graphicx}
@@ -73,59 +73,39 @@
 \begin{document}
 
 \input{frontmatter/coverpage}
-\pagenumbering{arabic}
+\pagenumbering{roman}
 
 % \input{frontmatter/thanks}
 
-% \phantomsection
-% \addcontentsline{toc}{chapter}{Tóm tắt nội dung đồ án}
-
-
 \tableofcontents
+
+\newpage
 \phantomsection
 \addcontentsline{toc}{chapter}{Danh sách hình vẽ}
 \listoffigures
-
-% \phantomsection
-% \addcontentsline{toc}{chapter}{Danh sách từ viết tắt}
-% \glsaddall
-% \printglossary[type=\acronymtype,title=Danh sách từ viết tắt, toctitle=Danh sách từ viết tắt]
 
 \newpage
 \phantomsection
 \addcontentsline{toc}{chapter}{Danh sách bảng}
 \listoftables
 
-% \printglossary[type=notation,title=Danh sách ký hiệu, toctitle=Danh sách ký hiệu,nonumberlist]
-% \input{chapter_da2/abstract}
-\input{chapter_da2/chapter2}  % Chương 1: Cơ sở lý thuyết
-\input{chapter_da2/chapter1}  % Chương 2: Bài toán (sẽ thêm khoảng trống nghiên cứu vào cuối)
-\input{chapter_da2/chapter4}  % Chương 3: Phương pháp VRAE
-\input{chapter_da2/chapter5}  % Chương 4: Kết quả và thảo luận (sẽ thêm kết luận)
-% chapter6 sẽ bị xóa vì là kết luận riêng
+\input{chapter_datn/abstract}
 
+\clearpage
+\pagenumbering{arabic}
+\input{chapter_datn/introduction}  % Chương 1: Giới thiệu
+\input{chapter_datn/theory}        % Chương 2: Cơ sở lý thuyết
+\input{chapter_datn/methodology}   % Chương 3-4: Mô hình hóa và phương pháp giải quyết
+% \input{chapter_datn/research_gap}  % (Bỏ qua) Chương Khoảng trống nghiên cứu
+\setcounter{chapter}{4}
+\input{chapter_datn/results}       % Chương 5: Kết quả thực nghiệm và thảo luận
 
-
-
-\chapter*{Minh chứng bài báo khoa học}
-\addcontentsline{toc}{chapter}{Minh chứng}
-
-Dưới đây là các minh chứng về kết quả nghiên cứu của đồ án:
-
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\linewidth]{images/certificate.pdf}
-    \caption{Giấy chứng nhận tham dự và trình bày tại SOICT 2025}
-    \label{fig:certificate}
-\end{figure}
 
 \newpage
 
 \addcontentsline{toc}{chapter}{Tài liệu tham khảo}
 \bibliographystyle{abbrvnat}
 \bibliography{refs}
-
 
 % \begin{appendices}
 % \input{chapters/appendixA}

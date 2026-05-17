@@ -1,6 +1,8 @@
 \babel@toc {vietnamese}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {table}{\numberline {2.9.1}{\ignorespaces Tóm tắt vai trò của các lý thuyết trong hệ thống bi-level.}}{19}{table.caption.7}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1.1}{\ignorespaces So sánh định lượng giữa GAN, FB, AE và phương pháp VRAE đề xuất trên tập kiểm tra (Test set).}}{29}{table.caption.16}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.2.1}{\ignorespaces So sánh baseline và phương án tối ưu Bayesian trên bốn kịch bản. Giá trị hàm phạt được chuẩn hóa theo tỷ USD, còn cắt tải được quy đổi về GWh.}}{32}{table.caption.9}%

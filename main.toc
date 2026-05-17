@@ -1,48 +1,67 @@
 \babel@toc {vietnamese}{}\relax 
-\contentsline {chapter}{Danh sách hình vẽ}{2}{section*.2}%
-\contentsline {chapter}{Danh sách bảng}{4}{section*.4}%
-\contentsline {chapter}{\numberline {1}Cơ sở lý thuyết}{5}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Tổng quan bài toán về thị giác máy tính}{5}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Mạng nơ-ron nhân tạo}{6}{section.1.2}%
-\contentsline {section}{\numberline {1.3}Mạng nơ-ron tích chập}{7}{section.1.3}%
-\contentsline {subsection}{\numberline {1.3.1}Ảnh màu RGB}{7}{subsection.1.3.1}%
-\contentsline {subsection}{\numberline {1.3.2}Lớp tích chập}{8}{subsection.1.3.2}%
-\contentsline {subsection}{\numberline {1.3.3}Tích chập chuyển vị}{9}{subsection.1.3.3}%
-\contentsline {subsection}{\numberline {1.3.4}Lớp pooling}{9}{subsection.1.3.4}%
-\contentsline {subsection}{\numberline {1.3.5}Hàm kích hoạt ReLU}{11}{subsection.1.3.5}%
-\contentsline {paragraph}{Ý nghĩa của ReLU trong CNN}{11}{subsection.1.3.5}%
-\contentsline {paragraph}{Hạn chế và giải pháp:}{11}{subsection.1.3.5}%
-\contentsline {paragraph}{Vị trí của ReLU trong kiến trúc CNN}{11}{subsection.1.3.5}%
-\contentsline {section}{\numberline {1.4}Kiến trúc mô hình ResNet-50}{12}{section.1.4}%
-\contentsline {section}{\numberline {1.5}Lý thuyết về Entropy và ứng dụng trong mạng nơ-ron tích chập}{13}{section.1.5}%
-\contentsline {subsection}{\numberline {1.5.1}Lý thuyết Entropy}{13}{subsection.1.5.1}%
-\contentsline {subsubsection}{Định nghĩa Entropy:}{13}{subsection.1.5.1}%
-\contentsline {subsubsection}{Ý nghĩa của Entropy trong Mạng Neural:}{13}{equation.1.5.1}%
-\contentsline {subsection}{\numberline {1.5.2}Sự Thay đổi Entropy trong lớp tích chập}{13}{subsection.1.5.2}%
-\contentsline {subsubsection}{Công thức tính toán:}{13}{subsection.1.5.2}%
-\contentsline {subsubsection}{Phân tích ý nghĩa và ảnh hưởng đến thông tin:}{14}{equation.1.5.2}%
-\contentsline {paragraph}{Ảnh hưởng của \( \log (|c_{11}|) \)}{14}{equation.1.5.2}%
-\contentsline {paragraph}{Ảnh hưởng của hệ số \((l - p + 1)(w - q + 1)\):}{14}{equation.1.5.2}%
-\contentsline {subsubsection}{Kết luận:}{14}{equation.1.5.2}%
-\contentsline {section}{\numberline {1.6}Phương pháp Autoencoder}{15}{section.1.6}%
-\contentsline {section}{\numberline {1.7}Phương pháp GAN}{16}{section.1.7}%
-\contentsline {section}{\numberline {1.8}Phương pháp Flow-based}{17}{section.1.8}%
-\contentsline {chapter}{\numberline {2}Bài toán khử nhiễu và khử mờ cho ảnh phương tiện có biển số xe}{20}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Giới thiệu}{20}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Phát biểu bài toán}{21}{section.2.2}%
-\contentsline {section}{\numberline {2.3}Khoảng trống nghiên cứu}{22}{section.2.3}%
-\contentsline {chapter}{\numberline {3}Phương pháp VRAE: Vertical Residual Autoencoder}{23}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Tổng quan kiến trúc}{23}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Khối chính (Main Block)}{24}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}Khối bổ trợ (Auxiliary Block)}{24}{subsection.3.1.2}%
-\contentsline {subsection}{\numberline {3.1.3}Bộ giải mã (Decoder)}{25}{subsection.3.1.3}%
-\contentsline {section}{\numberline {3.2}Chuẩn bị dữ liệu}{25}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Lựa chọn cấu hình kiến trúc}{26}{section.3.3}%
-\contentsline {chapter}{\numberline {4}Kết quả và thảo luận}{29}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Đánh giá định lượng}{29}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Phân tích bảo toàn nội dung thông tin}{30}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Phân tích sự đánh đổi (Trade-offs)}{31}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Hướng phát triển trong tương lai}{31}{section.4.4}%
-\contentsline {section}{\numberline {4.5}Kết luận}{32}{section.4.5}%
-\contentsline {chapter}{Minh chứng}{33}{chapter*.19}%
-\contentsline {chapter}{Tài liệu tham khảo}{34}{figure.caption.20}%
+\contentsline {chapter}{Danh sách hình vẽ}{iii}{section*.2}%
+\contentsline {chapter}{Danh sách bảng}{iv}{section*.4}%
+\contentsline {chapter}{Tóm tắt nội dung đồ án}{v}{section*.6}%
+\contentsline {chapter}{\numberline {1}Giới thiệu}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Bối cảnh và tầm quan trọng của đề tài}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Mục tiêu nghiên cứu}{2}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Phạm vi nghiên cứu}{3}{section.1.3}%
+\contentsline {chapter}{\numberline {2}Cơ sở lý thuyết}{4}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Bài toán Quy hoạch mở rộng nguồn điện (GEP)}{4}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Định nghĩa bài toán}{4}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Phân loại các phương pháp giải GEP}{5}{subsection.2.1.2}%
+\contentsline {section}{\numberline {2.2}Tối ưu hóa hai tầng (Bi-level Optimization)}{5}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Khái niệm và phát biểu toán học}{5}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Đặc điểm của bài toán bi-level}{6}{subsection.2.2.2}%
+\contentsline {section}{\numberline {2.3}Quy hoạch tuyến tính (Linear Programming)}{6}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Lý thuyết cơ bản}{6}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Thuật toán giải LP}{7}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Bài toán Điều độ kinh tế (Economic Dispatch)}{7}{subsection.2.3.3}%
+\contentsline {section}{\numberline {2.4}Tối ưu hóa Bayes (Bayesian Optimization)}{8}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Khái niệm và động lực}{8}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Các thành phần cốt lõi}{9}{subsection.2.4.2}%
+\contentsline {subsubsection}{Mô hình thay thế (Surrogate Model)}{9}{subsection.2.4.2}%
+\contentsline {subsubsection}{Hàm thu thập (Acquisition Function)}{10}{equation.2.4.12}%
+\contentsline {subsection}{\numberline {2.4.3}Quy trình tối ưu hóa Bayes}{10}{subsection.2.4.3}%
+\contentsline {section}{\numberline {2.5}Quá trình quyết định Markov (MDP)}{10}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Định nghĩa}{10}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Chính sách và hàm giá trị}{11}{subsection.2.5.2}%
+\contentsline {section}{\numberline {2.6}Học tăng cường (Reinforcement Learning)}{12}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Tổng quan}{12}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}Phương pháp Policy Gradient}{12}{subsection.2.6.2}%
+\contentsline {subsection}{\numberline {2.6.3}PPO -- Proximal Policy Optimization}{12}{subsection.2.6.3}%
+\contentsline {subsubsection}{Hàm mục tiêu có kẹp (Clipped Objective)}{12}{subsection.2.6.3}%
+\contentsline {subsubsection}{Ưu điểm của PPO}{13}{equation.2.6.21}%
+\contentsline {subsection}{\numberline {2.6.4}SAC -- Soft Actor-Critic}{13}{subsection.2.6.4}%
+\contentsline {subsubsection}{Nguyên lý cực đại hóa Entropy}{13}{subsection.2.6.4}%
+\contentsline {subsubsection}{Kiến trúc Actor-Critic}{14}{equation.2.6.22}%
+\contentsline {subsubsection}{Ưu điểm của SAC so với PPO}{14}{equation.2.6.25}%
+\contentsline {section}{\numberline {2.7}Chi phí đầu tư niên kim hóa (Annualized CAPEX)}{14}{section.2.7}%
+\contentsline {subsection}{\numberline {2.7.1}Nhân tử thu hồi vốn (Capital Recovery Factor)}{14}{subsection.2.7.1}%
+\contentsline {section}{\numberline {2.8}Phân tích kịch bản ngẫu nhiên (Stochastic Scenario Analysis)}{15}{section.2.8}%
+\contentsline {subsection}{\numberline {2.8.1}Mô phỏng Monte Carlo}{15}{subsection.2.8.1}%
+\contentsline {subsection}{\numberline {2.8.2}Liên hệ với đề tài}{17}{subsection.2.8.2}%
+\contentsline {section}{\numberline {2.9}Tổng kết chương}{18}{section.2.9}%
+\contentsline {chapter}{\numberline {3}Mô hình hóa bài toán quy hoạch mở rộng nguồn điện}{20}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Khung mô hình tối ưu hóa lai hai tầng}{20}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Mô hình toán học tầng dưới cho bài toán điều độ kinh tế}{21}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Tập hợp, tham số và biến quyết định}{21}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Hàm mục tiêu và hệ ràng buộc}{23}{subsection.3.2.2}%
+\contentsline {section}{\numberline {3.3}Mô hình toán học tầng trên cho bài toán quy hoạch mở rộng nguồn điện}{24}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Biến quyết định của bài toán đầu tư}{24}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Hàm mục tiêu tổng quát của tầng trên}{24}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Mô hình hóa tính bất định thông qua phân tích kịch bản Monte Carlo}{25}{section.3.4}%
+\contentsline {chapter}{\numberline {4}Phương pháp giải bài toán}{26}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Phương pháp giải bài toán tối ưu hộp đen ở tầng trên}{26}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Tối ưu hóa Bayes (Bayesian Optimization - BO)}{26}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Học tăng cường (Reinforcement Learning - RL)}{27}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Đặc tả môi trường tương tác cho bài toán học tăng cường}{28}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Không gian quan sát}{28}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Không gian hành động và cơ chế phần thưởng}{28}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}Thiết kế hệ thống và quy trình triển khai tính toán}{29}{section.4.3}%
+\contentsline {chapter}{\numberline {5}Kết quả thực nghiệm và thảo luận}{31}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Thiết lập và tiêu chí đánh giá}{31}{section.5.1}%
+\contentsline {section}{\numberline {5.2}So sánh định lượng giữa các kịch bản}{32}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Phân tích cơ cấu đầu tư tối ưu}{33}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Hành vi hội tụ của Bayesian Optimization}{34}{section.5.4}%
+\contentsline {chapter}{Tài liệu tham khảo}{35}{figure.caption.11}%

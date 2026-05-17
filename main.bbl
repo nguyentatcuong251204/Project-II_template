@@ -1,98 +1,182 @@
-\begin{thebibliography}{14}
+\begin{thebibliography}{26}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Cover and Thomas(2006)]{cover2006}
-T.~M. Cover and J.~A. Thomas.
-\newblock \emph{Elements of Information Theory}.
-\newblock John Wiley \& Sons, 2006.
-
-\bibitem[Dinh et~al.(2017)Dinh, Sohl-Dickstein, and Bengio]{dinh2017}
-L.~Dinh, J.~Sohl-Dickstein, and S.~Bengio.
-\newblock Density estimation using real nvp.
-\newblock In \emph{International Conference on Learning Representations
-  (ICLR)}, 2017.
-
-\bibitem[Erdogmus et~al.(2003)Erdogmus, Hild, and Principe]{erdogmus2003}
-D.~Erdogmus, K.~E. Hild, and J.~C. Principe.
-\newblock Online entropy manipulation: Stochastic information gradient.
-\newblock \emph{IEEE Signal Processing Letters}, 10\penalty0 (8):\penalty0
-  242--245, 2003.
-
-\bibitem[Gabrie et~al.(2018)Gabrie, Manoel, Luneau, Macris, Krzakala, and
-  Zdeborova]{gabrie2018}
-M.~Gabrie, A.~Manoel, C.~Luneau, N.~Macris, F.~Krzakala, and L.~Zdeborova.
-\newblock Entropy and mutual information in models of deep neural networks.
+\bibitem[Bergstra et~al.(2011)Bergstra, Bardenet, Bengio, and
+  K{\'e}gl]{bergstra2011tpe}
+J.~Bergstra, R.~Bardenet, Y.~Bengio, and B.~K{\'e}gl.
+\newblock Algorithms for hyper-parameter optimization.
 \newblock In \emph{Advances in Neural Information Processing Systems},
-  volume~31, 2018.
+  volume~24, 2011.
 
-\bibitem[He et~al.(2016)He, Zhang, Ren, and Sun]{he2016deep}
-K.~He, X.~Zhang, S.~Ren, and J.~Sun.
-\newblock Deep residual learning for image recognition.
-\newblock In \emph{Proceedings of the IEEE CVPR}, 2016.
+\bibitem[Bertsimas and Tsitsiklis(1997)]{bertsimas1997lp}
+D.~Bertsimas and J.~N. Tsitsiklis.
+\newblock \emph{Introduction to Linear Optimization}.
+\newblock Athena Scientific, 1997.
 
-\bibitem[Kingma and Dhariwal(2018)]{kingma2018}
-D.~P. Kingma and P.~Dhariwal.
-\newblock Glow: Generative flow with invertible 1x1 convolutions.
-\newblock In \emph{Advances in Neural Information Processing Systems
-  (NeurIPS)}, 2018.
+\bibitem[Brealey et~al.(2020)Brealey, Myers, and Allen]{brealey2020corporate}
+R.~A. Brealey, S.~C. Myers, and F.~Allen.
+\newblock \emph{Principles of Corporate Finance}.
+\newblock McGraw-Hill Education, 13th edition, 2020.
 
-\bibitem[Kupyn et~al.(2018)Kupyn, Budzan, Mykhailych, Mishkin, and
-  Matas]{kupyn2018}
-O.~Kupyn, V.~Budzan, M.~Mykhailych, D.~Mishkin, and J.~Matas.
-\newblock Deblurgan: Blind motion deblurring using conditional adversarial
-  networks.
-\newblock In \emph{Proceedings of the IEEE Conference on Computer Vision and
-  Pattern Recognition (CVPR) Workshops}, 2018.
+\bibitem[Colson et~al.(2007)Colson, Marcotte, and Savard]{colson2007bilevel}
+B.~Colson, P.~Marcotte, and G.~Savard.
+\newblock An overview of bilevel optimization.
+\newblock \emph{Annals of Operations Research}, 153\penalty0 (1):\penalty0
+  235--256, 2007.
+\newblock \doi{10.1007/s10479-007-0176-2}.
 
-\bibitem[Ledig et~al.(2017)Ledig, Theis, Husz{\'a}r, Caballero, Cunningham,
-  Acosta, Aitken, Tejani, Totz, Wang, and Shi]{ledig2017photo}
-C.~Ledig, L.~Theis, F.~Husz{\'a}r, J.~Caballero, A.~Cunningham, A.~Acosta,
-  A.~Aitken, A.~Tejani, J.~Totz, Z.~Wang, and W.~Shi.
-\newblock Photo-realistic single image super-resolution using a generative
-  adversarial network.
-\newblock In \emph{Proceedings of the IEEE Conference on Computer Vision and
-  Pattern Recognition (CVPR)}, 2017.
+\bibitem[Dantzig(1951)]{dantzig1951simplex}
+G.~B. Dantzig.
+\newblock Maximization of a linear function of variables subject to linear
+  inequalities.
+\newblock \emph{Activity Analysis of Production and Allocation}, pages
+  339--347, 1951.
 
-\bibitem[Meni et~al.(2023)Meni, White, Mayo, and Pilkiewicz]{meni2023}
-M.~J. Meni, R.~T. White, M.~L. Mayo, and K.~R. Pilkiewicz.
-\newblock Entropy-based guidance of deep neural networks for accelerated
-  convergence and improved performance.
-\newblock \emph{Information Sciences}, 681, 2023.
+\bibitem[Frazier(2018)]{frazier2018bo_tutorial}
+P.~I. Frazier.
+\newblock A tutorial on {B}ayesian optimization.
+\newblock \emph{arXiv preprint arXiv:1807.02811}, 2018.
 
-\bibitem[Principe et~al.(2000)Principe, Xu, Zhao, and Fisher]{principe2000}
-J.~C. Principe, D.~Xu, Q.~Zhao, and J.~W. Fisher.
-\newblock Learning from examples with information theoretic criteria.
-\newblock \emph{Journal of VLSI Signal Processing Systems for Signal, Image,
-  and Video Technology}, 26\penalty0 (1):\penalty0 61--77, 2000.
+\bibitem[Haarnoja et~al.(2018{\natexlab{a}})Haarnoja, Zhou, Abbeel, and
+  Levine]{haarnoja2018sac}
+T.~Haarnoja, A.~Zhou, P.~Abbeel, and S.~Levine.
+\newblock Soft actor-critic: Off-policy maximum entropy deep reinforcement
+  learning with a stochastic actor.
+\newblock In \emph{Proceedings of the 35th International Conference on Machine
+  Learning (ICML)}, pages 1861--1870, 2018{\natexlab{a}}.
 
-\bibitem[Shannon(1948)]{shannon1948}
-C.~E. Shannon.
-\newblock A mathematical theory of communication.
-\newblock \emph{The Bell System Technical Journal}, 27\penalty0 (3):\penalty0
-  379--423, 1948.
+\bibitem[Haarnoja et~al.(2018{\natexlab{b}})Haarnoja, Zhou, Hartikainen,
+  Tucker, Ha, Tan, Kumar, Zhu, Gupta, Abbeel, and Levine]{haarnoja2018sac_v2}
+T.~Haarnoja, A.~Zhou, K.~Hartikainen, G.~Tucker, S.~Ha, J.~Tan, V.~Kumar,
+  H.~Zhu, A.~Gupta, P.~Abbeel, and S.~Levine.
+\newblock Soft actor-critic algorithms and applications.
+\newblock \emph{arXiv preprint arXiv:1812.05905}, 2018{\natexlab{b}}.
 
-\bibitem[Tishby et~al.(1999)Tishby, Pereira, and Bialek]{tishby1999}
-N.~Tishby, F.~C. Pereira, and W.~Bialek.
-\newblock The information bottleneck method.
-\newblock In \emph{Proceedings of the 37th Annual Allerton Conference on
-  Communication, Control, and Computing}, pages 368--377, 1999.
+\bibitem[Hansen et~al.(1992)Hansen, Jaumard, and
+  Savard]{hansen1992bilevel_nphard}
+P.~Hansen, B.~Jaumard, and G.~Savard.
+\newblock New branch-and-bound rules for linear bilevel programming.
+\newblock \emph{SIAM Journal on Scientific and Statistical Computing},
+  13\penalty0 (5):\penalty0 1194--1217, 1992.
+\newblock \doi{10.1137/0913069}.
 
-\bibitem[Vincent et~al.(2008)Vincent, Larochelle, Bengio, and
-  Manzagol]{vincent2008}
-P.~Vincent, H.~Larochelle, Y.~Bengio, and P.-A. Manzagol.
-\newblock Extracting and composing robust features with denoising autoencoders.
-\newblock In \emph{Proceedings of the 25th International Conference on Machine
-  Learning (ICML)}, pages 1096--1103, 2008.
+\bibitem[Jones et~al.(1998)Jones, Schonlau, and Welch]{jones1998ei}
+D.~R. Jones, M.~Schonlau, and W.~J. Welch.
+\newblock Efficient global optimization of expensive black-box functions.
+\newblock \emph{Journal of Global Optimization}, 13\penalty0 (4):\penalty0
+  455--492, 1998.
+\newblock \doi{10.1023/A:1008306431147}.
 
-\bibitem[Zhang et~al.(2017)Zhang, Zuo, Chen, Meng, and Zhang]{zhang2017}
-K.~Zhang, W.~Zuo, Y.~Chen, D.~Meng, and L.~Zhang.
-\newblock Beyond a gaussian denoiser: Residual learning of deep cnn for image
-  denoising.
-\newblock \emph{IEEE Transactions on Image Processing}, 26\penalty0
-  (7):\penalty0 3142--3155, 2017.
+\bibitem[Karmarkar(1984)]{karmarkar1984interior}
+N.~Karmarkar.
+\newblock A new polynomial-time algorithm for linear programming.
+\newblock \emph{Combinatorica}, 4\penalty0 (4):\penalty0 373--395, 1984.
+\newblock \doi{10.1007/BF02579150}.
+
+\bibitem[Koltsaklis and Dagoumas(2018)]{koltsaklis2018gep}
+N.~E. Koltsaklis and A.~S. Dagoumas.
+\newblock State-of-the-art generation expansion planning: A review.
+\newblock \emph{Applied Energy}, 230:\penalty0 563--589, 2018.
+\newblock \doi{10.1016/j.apenergy.2018.08.087}.
+
+\bibitem[{National Renewable Energy Laboratory}(2024)]{nrel2024atb}
+{National Renewable Energy Laboratory}.
+\newblock 2024 annual technology baseline.
+\newblock Technical report, National Renewable Energy Laboratory, Golden, CO,
+  2024.
+\newblock URL \url{https://atb.nrel.gov/}.
+
+\bibitem[Oree et~al.(2017)Oree, Sayed~Hassen, and Fleming]{oree2017gep_review}
+V.~Oree, S.~Z. Sayed~Hassen, and P.~J. Fleming.
+\newblock Generation expansion planning optimisation with renewable energy
+  integration: A review.
+\newblock \emph{Renewable and Sustainable Energy Reviews}, 69:\penalty0
+  790--803, 2017.
+\newblock \doi{10.1016/j.rser.2016.11.120}.
+
+\bibitem[Puterman(1994)]{puterman1994mdp}
+M.~L. Puterman.
+\newblock \emph{Markov Decision Processes: Discrete Stochastic Dynamic
+  Programming}.
+\newblock John Wiley \& Sons, 1994.
+
+\bibitem[Rasmussen and Williams(2006)]{rasmussen2006gp}
+C.~E. Rasmussen and C.~K.~I. Williams.
+\newblock \emph{Gaussian Processes for Machine Learning}.
+\newblock MIT Press, 2006.
+
+\bibitem[Rubinstein and Kroese(2016)]{rubinstein2016monte_carlo}
+R.~Y. Rubinstein and D.~P. Kroese.
+\newblock \emph{Simulation and the Monte Carlo Method}.
+\newblock John Wiley \& Sons, 3rd edition, 2016.
+
+\bibitem[Sadeghi et~al.(2017)Sadeghi, Rashidinejad, and
+  Abdollahi]{sadeghi2017gep_review}
+H.~Sadeghi, M.~Rashidinejad, and A.~Abdollahi.
+\newblock A comprehensive sequential review study through the generation
+  expansion planning.
+\newblock \emph{Renewable and Sustainable Energy Reviews}, 67:\penalty0
+  1369--1394, 2017.
+\newblock \doi{10.1016/j.rser.2016.09.046}.
+
+\bibitem[Schulman et~al.(2015{\natexlab{a}})Schulman, Levine, Abbeel, Jordan,
+  and Moritz]{schulman2015trpo}
+J.~Schulman, S.~Levine, P.~Abbeel, M.~Jordan, and P.~Moritz.
+\newblock Trust region policy optimization.
+\newblock In \emph{Proceedings of the 32nd International Conference on Machine
+  Learning (ICML)}, pages 1889--1897, 2015{\natexlab{a}}.
+
+\bibitem[Schulman et~al.(2015{\natexlab{b}})Schulman, Moritz, Levine, Jordan,
+  and Abbeel]{schulman2015gae}
+J.~Schulman, P.~Moritz, S.~Levine, M.~Jordan, and P.~Abbeel.
+\newblock High-dimensional continuous control using generalized advantage
+  estimation.
+\newblock \emph{arXiv preprint arXiv:1506.02438}, 2015{\natexlab{b}}.
+
+\bibitem[Schulman et~al.(2017)Schulman, Wolski, Dhariwal, Radford, and
+  Klimov]{schulman2017ppo}
+J.~Schulman, F.~Wolski, P.~Dhariwal, A.~Radford, and O.~Klimov.
+\newblock Proximal policy optimization algorithms.
+\newblock \emph{arXiv preprint arXiv:1707.06347}, 2017.
+
+\bibitem[Shahriari et~al.(2016)Shahriari, Swersky, Wang, Adams, and
+  de~Freitas]{shahriari2016bo_survey}
+B.~Shahriari, K.~Swersky, Z.~Wang, R.~P. Adams, and N.~de~Freitas.
+\newblock Taking the human out of the loop: A review of {B}ayesian
+  optimization.
+\newblock \emph{Proceedings of the IEEE}, 104\penalty0 (1):\penalty0 148--175,
+  2016.
+\newblock \doi{10.1109/JPROC.2015.2494218}.
+
+\bibitem[Sinha et~al.(2018)Sinha, Malo, and Deb]{sinha2018bilevel_review}
+A.~Sinha, P.~Malo, and K.~Deb.
+\newblock A review on bilevel optimization: From classical to evolutionary
+  approaches and applications.
+\newblock \emph{IEEE Transactions on Evolutionary Computation}, 22\penalty0
+  (2):\penalty0 276--295, 2018.
+\newblock \doi{10.1109/TEVC.2017.2712906}.
+
+\bibitem[Sutton and Barto(2018)]{sutton2018rl}
+R.~S. Sutton and A.~G. Barto.
+\newblock \emph{Reinforcement Learning: An Introduction}.
+\newblock MIT Press, 2nd edition, 2018.
+
+\bibitem[Wood et~al.(2013)Wood, Wollenberg, and
+  Shebl{\'e}]{wood2013powersystems}
+A.~J. Wood, B.~F. Wollenberg, and G.~B. Shebl{\'e}.
+\newblock \emph{Power Generation, Operation, and Control}.
+\newblock John Wiley \& Sons, 3rd edition, 2013.
+
+\bibitem[Zhang and Li(2023)]{zhang2023dataset}
+Q.~Zhang and F.~Li.
+\newblock A dataset for electricity market studies on western and northeastern
+  power grids in the united states.
+\newblock \emph{Scientific Data}, 10\penalty0 (1):\penalty0 646, Sep 2023.
+\newblock \doi{10.1038/s41597-023-02448-w}.
+\newblock URL \url{https://doi.org/10.1038/s41597-023-02448-w}.
 
 \end{thebibliography}

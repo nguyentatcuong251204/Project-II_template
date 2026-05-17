@@ -1,0 +1,197 @@
+ĐẠI HỌC BÁCH KHOA HÀ NỘI
+
+ĐỒ ÁN TỐT NGHIỆP
+Mô hình Meta-learning tối ưu vận hành hệ thống điện
+
+NGUYỄN TẤT CƯỜNG
+cuong.nt227090@sis.hust.edu.vn
+Chuyên ngành: Toán Tin
+
+Giảng viên hướng dẫn : TS. Trần Ngọc Thăng
+Bộ môn
+: Toán Tin
+Khoa
+: Khoa Toán Tin
+
+Hà Nội, 06-2026
+
+Chữ ký GVHD
+
+NHẬN XÉT CỦA GIẢNG VIÊN HƯỚNG DẪN ĐỒ ÁN II
+1. Thông tin sinh viên :
+Họ và tên : Nguyễn Tất Cường.
+
+Lớp : MI1 - K67
+
+Thời gian thực hiện : 09/03/2026 - 21/06/2026.
+2. Mục tiêu và nội dung của Đồ án :
+Đồ án tập trung nghiên cứu ứng dụng Meta-learning trong tối ưu hóa vận
+hành hệ thống điện, nhằm nâng cao khả năng thích ứng và hiệu quả của các mô
+hình điều độ kinh tế khi đối mặt với sự biến động mạnh của phụ tải và nguồn năng
+lượng tái tạo.
+3. Lời cam kết của sinh viên :
+Em xin cam kết rằng đồ án này do em tự thực hiện, dưới sự hướng dẫn khoa
+học của Thầy TS. Trần Ngọc Thăng. Các kết quả nghiên cứu, số liệu và nội dung
+trình bày trong đồ án là trung thực. Mọi tài liệu, số liệu và kết quả nghiên cứu của
+các tác giả khác được sử dụng trong đồ án đều đã được trích dẫn đầy đủ, rõ ràng và
+đúng quy định. Em xin hoàn toàn chịu trách nhiệm trước nhà trường và khoa về lời
+cam kết này.
+Hà Nội, ngày
+
+tháng
+Tác giả
+
+năm 2026
+
+Nguyễn Tất Cường
+4. Xác nhận của Giảng viên hướng dẫn:
+..........................................................................
+..........................................................................
+Hà Nội, ngày tháng năm 2025
+Giảng viên hướng dẫn
+
+TS. Trần Ngọc Thăng
+
+Lời cảm ơn
+Em xin chân thành cảm ơn TS. Trần Ngọc Thăng đã tận tình hướng
+dẫn, chỉ bảo và tạo điều kiện thuận lợi cho em trong suốt quá trình thực
+hiện đồ án này. Những góp ý quý báu của các thầy đã giúp em hoàn
+thiện nghiên cứu và nâng cao chất lượng đồ án.
+Em cũng xin gửi lời cảm ơn sâu sắc đến các đồng nghiệp tại Trung
+tâm kinh tế môi trường và biến đổi khí hậu (CECCS) - Liên hiệp các
+Hội Khoa học và Kỹ thuật Việt Nam (VUSTA) đã luôn đồng hành,
+hỗ trợ và chia sẻ kinh nghiệm quý báu trong suốt thời gian thực hiện đồ
+án. Sự giúp đỡ nhiệt tình của mọi người đã tạo động lực to lớn giúp em
+vượt qua những khó khăn và hoàn thành tốt đồ án này.
+Cuối cùng, em xin cảm ơn gia đình, bạn bè đã luôn động viên, ủng
+hộ và tạo điều kiện tốt nhất để em có thể hoàn thành chương trình học
+tập.
+
+Hà Nội, tháng năm 2026
+Tác giả đồ án
+
+Nguyễn Tất Cường
+
+Mục lục
+TÓM TẮT NỘI DUNG ĐỒ ÁN
+
+1
+
+DANH SÁCH HÌNH VẼ
+
+1
+
+DANH SÁCH BẢNG
+
+3
+
+1 GIỚI THIỆU
+
+6
+6
+7
+7
+
+1.1 Bối cảnh và tầm quan trọng của đề tài . . . . . . . . . .
+1.2 Mục tiêu nghiên cứu . . . . . . . . . . . . . . . . . . . .
+1.3 Phạm vi nghiên cứu . . . . . . . . . . . . . . . . . . . .
+2 CƠ SỞ LÝ THUYẾT
+
+2.1 Bài toán Quy hoạch mở rộng nguồn điện (GEP) . . . . .
+2.1.1 Định nghĩa bài toán . . . . . . . . . . . . . . . . .
+2.1.2 Phân loại các phương pháp giải GEP . . . . . . . .
+2.1.3 Liên hệ với đề tài . . . . . . . . . . . . . . . . . .
+2.2 Tối ưu hóa hai tầng (Bi-level Optimization) . . . . . . .
+2.2.1 Khái niệm và phát biểu toán học . . . . . . . . . .
+2.2.2 Đặc điểm của bài toán bi-level . . . . . . . . . . .
+2.2.3 Liên hệ với đề tài . . . . . . . . . . . . . . . . . .
+2.3 Quy hoạch tuyến tính (Linear Programming) . . . . . . .
+2.3.1 Lý thuyết cơ bản . . . . . . . . . . . . . . . . . .
+2.3.2 Thuật toán giải LP . . . . . . . . . . . . . . . . .
+2.3.3 Bài toán Điều độ kinh tế (Economic Dispatch) . .
+2.3.4 Liên hệ với đề tài . . . . . . . . . . . . . . . . . .
+2.4 Tối ưu hóa Bayes (Bayesian Optimization) . . . . . . . .
+2.4.1 Khái niệm và động lực . . . . . . . . . . . . . . .
+2.4.2 Các thành phần cốt lõi . . . . . . . . . . . . . . .
+2.4.3 Quy trình tối ưu hóa Bayes . . . . . . . . . . . . .
+2.4.4 Liên hệ với đề tài . . . . . . . . . . . . . . . . . .
+2.5 Quá trình quyết định Markov (MDP) . . . . . . . . . . .
+2.5.1 Định nghĩa . . . . . . . . . . . . . . . . . . . . .
+2.5.2 Chính sách và hàm giá trị . . . . . . . . . . . . . .
+2.5.3 Liên hệ với đề tài . . . . . . . . . . . . . . . . . .
+2.6 Học tăng cường (Reinforcement Learning) . . . . . . . .
+2.6.1 Tổng quan . . . . . . . . . . . . . . . . . . . . . .
+2.6.2 Phương pháp Policy Gradient . . . . . . . . . . .
+1
+
+9
+9
+9
+10
+10
+11
+11
+11
+11
+12
+12
+12
+13
+14
+15
+15
+15
+16
+17
+17
+17
+18
+18
+19
+19
+19
+
+2.6.3 PPO – Proximal Policy Optimization . . . . . . .
+2.6.4 SAC – Soft Actor-Critic . . . . . . . . . . . . . .
+2.6.5 Liên hệ với đề tài . . . . . . . . . . . . . . . . . .
+2.7 Chi phí đầu tư niên kim hóa (Annualized CAPEX) . . . .
+2.7.1 Nhân tử thu hồi vốn (Capital Recovery Factor) . .
+2.7.2 Liên hệ với đề tài . . . . . . . . . . . . . . . . . .
+2.8 Phân tích kịch bản ngẫu nhiên (Stochastic Scenario Analysis) . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2.8.1 Mô phỏng Monte Carlo . . . . . . . . . . . . . . .
+2.8.2 Liên hệ với đề tài . . . . . . . . . . . . . . . . . .
+2.9 Tổng kết chương . . . . . . . . . . . . . . . . . . . . . .
+3 KHOẢNG TRỐNG NGHIÊN CỨU VÀ MỤC TIÊU ĐỀ TÀI
+
+3.1 Định hình toán học và giới hạn của các phương pháp hiện
+hành . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.2 Khoảng trống nghiên cứu cốt lõi . . . . . . . . . . . . .
+3.3 Cách tiếp cận nhằm biến đổi toán học và lấp đầy khoảng
+trống . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.3.1 Tầng dưới: Cơ chế tuyệt đối hóa "Hàm đã biết"bằng
+Quy hoạch tuyến tính (LP) . . . . . . . . . . . . .
+3.3.2 Tầng trên: Định tuyến không gian "Hàm chưa biết /
+Hộp đen"bằng AI . . . . . . . . . . . . . . . . . .
+3.3.3 Hoàn thiện hệ hàm kinh tế – kỳ vọng ngẫu nhiên .
+
+2
+
+19
+20
+21
+22
+22
+22
+23
+23
+23
+23
+25
+25
+26
+27
+27
+27
+28
+
+

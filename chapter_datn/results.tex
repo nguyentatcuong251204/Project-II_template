@@ -1,0 +1,94 @@
+\chapter{Kết quả thực nghiệm và thảo luận}
+\label{chap:results}
+
+\captionsetup[subfigure]{font=small}
+
+Chương này tổng hợp các kết quả được sinh trực tiếp từ pipeline trong thư mục \texttt{DATN/Code} trên bốn kịch bản cấu hình: \texttt{wecc\_3zone}, \texttt{wecc\_clean\_energy}, \texttt{wecc\_future}, và \texttt{wecc\_robust}. Mỗi thí nghiệm đều sử dụng dữ liệu WECC 3 vùng, mô phỏng 12 ngày đại diện (288 giờ), trong đó tầng trên dùng Bayesian Optimization còn tầng dưới giải bài toán điều độ kinh tế bằng LP với bộ giải HiGHS.
+
+\section{Thiết lập và tiêu chí đánh giá}
+
+Để bảo đảm tính so sánh, mỗi kịch bản đều được đánh giá theo cùng một quy trình hai bước. Thứ nhất, hệ thống chạy phương án \textit{baseline} với véctơ đầu tư bằng 0 để đo chi phí vận hành và lượng cắt tải của lưới điện hiện hữu. Thứ hai, tầng trên tìm phương án đầu tư mới nhằm cực tiểu hóa hàm phạt tổng quát
+\begin{equation}
+    J(\mathbf{x}) = C_{\text{inv}}(\mathbf{x}) + C_{\text{op}}^*(\mathbf{x}) + \beta S_{\text{total}}(\mathbf{x}),
+\end{equation}
+trong đó $C_{\text{inv}}$ là chi phí đầu tư niên kim hóa, $C_{\text{op}}^*$ là chi phí vận hành tối ưu từ tầng dưới, và $S_{\text{total}}$ là tổng điện năng bị cắt tải. Vì vậy, chỉ tiêu so sánh chính trong chương này là: tổng hàm phạt (tỷ USD), lượng cắt tải (GWh), và thời gian tối ưu hóa (giây).
+
+\section{So sánh định lượng giữa các kịch bản}
+
+Bảng \ref{tab:scenario_results} tóm tắt kết quả cuối cùng của bốn kịch bản. Có thể thấy ngay rằng kịch bản cơ sở không yêu cầu đầu tư thêm: phương án tốt nhất của Bayesian Optimization hội tụ về đúng nghiệm không đầu tư, cho cùng mức hàm phạt với baseline. Điều này cho thấy với tập 12 ngày đại diện đang xét, hệ thống hiện hữu vẫn đủ khả năng vận hành mà không cần mở rộng nguồn.
+
+\begin{table}[!ht]
+    \centering
+    \caption{So sánh baseline và phương án tối ưu Bayesian trên bốn kịch bản. Giá trị hàm phạt được chuẩn hóa theo tỷ USD, còn cắt tải được quy đổi về GWh.}
+    \label{tab:scenario_results}
+    \scriptsize
+    \begin{tabular}{lrrrrrr}
+        \hline
+        Kịch bản & Baseline & BO & Giảm & Shed base & Shed BO & Thời gian \\
+         & (tỷ USD) & (tỷ USD) & (\%) & (GWh) & (GWh) & (s) \\
+        \hline
+        Cơ sở & 0.033 & 0.033 & 0.0 & 0.0 & 0.0 & 53.7 \\
+        Chuyển dịch xanh & 7.584 & 4.369 & 42.4 & 349.4 & 103.0 & 25.6 \\
+        Tương lai căng thẳng & 15.607 & 8.706 & 44.2 & 767.3 & 319.1 & 26.2 \\
+        Quy hoạch robust & 3.107 & 2.414 & 22.3 & 140.5 & 141.9 & 60.3 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Hai kịch bản tạo ra mức cải thiện mạnh nhất là \textit{Chuyển dịch xanh} và \textit{Tương lai căng thẳng}. Ở kịch bản chuyển dịch xanh, tổng hàm phạt giảm $42.4\%$ còn cắt tải giảm từ $349.4$ GWh xuống $103.0$ GWh, tương đương mức giảm $70.5\%$. Ở kịch bản tương lai căng thẳng, mức cải thiện về hàm phạt đạt $44.2\%$, trong khi cắt tải giảm từ $767.3$ GWh xuống $319.1$ GWh, tức giảm khoảng $58.4\%$. Điều này xác nhận kiến trúc hai tầng có khả năng tự động phân bổ đầu tư đúng vào các công nghệ và vùng còn thiếu hụt công suất nhất.
+
+Ngược lại, kịch bản robust cho thấy một dạng đánh đổi khác: hàm phạt kỳ vọng vẫn giảm $22.3\%$, nhưng lượng cắt tải trên tập ngày đại diện tăng nhẹ từ $140.5$ GWh lên $141.9$ GWh. Kết quả này phù hợp với cách xây dựng bài toán robust: tầng trên không tối ưu cho duy nhất một quỹ đạo phụ tải-tái tạo cố định, mà tối ưu theo kỳ vọng trên nhiều kịch bản nhiễu Monte Carlo. Vì vậy, nghiệm robust có thể hy sinh một phần hiệu năng trên bộ dữ liệu đại diện để đổi lấy tính bền vững cao hơn trước bất định.
+
+\section{Phân tích cơ cấu đầu tư tối ưu}
+
+Hình \ref{fig:investment_allocations} thể hiện phân bổ công suất đầu tư theo từng vùng và công nghệ. Kịch bản chuyển dịch xanh ưu tiên mở rộng rất mạnh điện gió và pin lưu trữ, với tổng mức đầu tư lần lượt khoảng $8.48$ GW gió và $3.41$ GW pin, trong khi điện mặt trời chỉ tăng $0.70$ GW. Điều này phản ánh tác động của hệ số phát thải và mức thuế carbon cao: mô hình ưu tiên các nguồn tái tạo có sản lượng cao và dùng pin để bù độ biến thiên theo thời gian.
+
+Trong kịch bản tương lai căng thẳng, danh mục đầu tư tối ưu mở rộng đồng thời cả bốn công nghệ, nổi bật là $8.60$ GW điện gió, $4.71$ GW điện mặt trời và $3.20$ GW pin. So với kịch bản chuyển dịch xanh, phương án này phân bổ nhiều hơn cho điện mặt trời và pin do phụ tải tăng mạnh trên toàn hệ thống. Trong khi đó, kịch bản robust lại nghiêng nhiều hơn về nguồn điều độ được, với $2.51$ GW \texttt{gas\_ccs} và $1.97$ GW pin, cho thấy khi đưa bất định vào hàm mục tiêu thì giá trị của công suất chắc chắn và khả năng dịch chuyển năng lượng tăng lên rõ rệt.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Code/results/wecc_clean_energy_investment_allocation.png}
+        \caption{Kịch bản chuyển dịch xanh}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Code/results/wecc_future_investment_allocation.png}
+        \caption{Kịch bản tương lai căng thẳng}
+    \end{subfigure}
+
+    \vspace{0.5cm}
+
+    \begin{subfigure}{0.62\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Code/results/wecc_robust_investment_allocation.png}
+        \caption{Kịch bản robust}
+    \end{subfigure}
+    \caption{Phân bổ công suất đầu tư tối ưu theo vùng và công nghệ cho ba kịch bản cần mở rộng nguồn.}
+    \label{fig:investment_allocations}
+\end{figure}
+
+\section{Hành vi hội tụ của Bayesian Optimization}
+
+Hình \ref{fig:convergence_results} cho thấy tiến trình hội tụ của Bayesian Optimization trong hai trường hợp đại diện. Với kịch bản chuyển dịch xanh, đường bao tốt nhất giảm khá nhanh chỉ sau khoảng 40--50 lượt đánh giá, phản ánh rằng cấu trúc hàm mục tiêu tuy phi lồi nhưng vẫn đủ trơn để bộ tìm kiếm TPE khai thác hiệu quả. Với kịch bản robust, hội tụ chậm hơn đáng kể và thời gian chạy tăng lên hơn 60 giây do mỗi lần đánh giá phải lấy trung bình trên nhiều kịch bản Monte Carlo.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Code/results/wecc_clean_energy_convergence.png}
+        \caption{Kịch bản chuyển dịch xanh}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{../Code/results/wecc_robust_convergence.png}
+        \caption{Kịch bản robust}
+    \end{subfigure}
+    \caption{Đường hội tụ của Bayesian Optimization cho hai kịch bản tiêu biểu.}
+    \label{fig:convergence_results}
+\end{figure}
+
+Tổng hợp lại, các kết quả thực nghiệm cho thấy mô hình Bi-level Hybrid thực sự có giá trị trong các bối cảnh hệ thống bị siết chặt bởi chính sách carbon, tăng trưởng phụ tải hoặc bất định tái tạo. Khi hệ thống hiện hữu vẫn đủ dự phòng, mô hình không buộc phải đầu tư thêm; ngược lại, khi xuất hiện thiếu hụt cấu trúc, pipeline sẽ tự động đề xuất một tổ hợp nguồn mới với vai trò rất rõ ràng giữa nhóm năng lượng tái tạo, pin lưu trữ và nguồn điều độ được.

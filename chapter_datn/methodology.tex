@@ -1,0 +1,245 @@
+\chapter{Mô hình hóa bài toán quy hoạch mở rộng nguồn điện}
+\label{chap:problem-modeling}
+
+Dựa trên các nền tảng lý thuyết đã được trình bày ở Chương 2, chương này đi sâu vào việc xây dựng và công thức hóa bài toán cốt lõi của đề tài: Bài toán Quy hoạch mở rộng nguồn điện (GEP) giải quyết bằng kiến trúc tối ưu hóa lai hai tầng (Bi-level Hybrid Optimization). Cách tiếp cận này giúp khắc phục giới hạn của các phương pháp truyền thống khi phải đối mặt với không gian tìm kiếm rộng lớn và tính bất định của năng lượng tái tạo, đồng thời đảm bảo các ràng buộc vật lý khắt khe của hệ thống điện.
+
+% ================================================================
+\section{Khung mô hình tối ưu hóa lai hai tầng}
+% ================================================================
+
+Bài toán quy hoạch mở rộng nguồn điện vốn yêu cầu xem xét đồng thời quyết định đầu tư dài hạn (xây nhà máy gì, ở đâu, công suất bao nhiêu) và quyết định vận hành ngắn hạn (huy động các nhà máy như thế nào để đáp ứng phụ tải từng giờ). Để giải quyết bài toán này một cách khả thi và hiệu quả, đề tài đề xuất phân tách bài toán thành cấu trúc hai tầng (Bi-level):
+
+\begin{itemize}
+    \item \textbf{Tầng trên (Upper Level):} Đóng vai trò là ``Nhà hoạch định chiến lược''. Tầng này sử dụng các thuật toán Trí tuệ nhân tạo (Học tăng cường hoặc Tối ưu hóa Bayes) để tìm kiếm và đề xuất các phương án đầu tư công suất (véctơ $\mathbf{x}$).
+    \item \textbf{Tầng dưới (Lower Level):} Đóng vai trò là ``Điều độ viên hệ thống''. Tầng này nhận phương án đầu tư từ tầng trên, cập nhật cấu trúc lưới điện, và giải bài toán Quy hoạch tuyến tính (LP) để mô phỏng vận hành hệ thống trong suốt một năm (hoặc các ngày đại diện). Tầng dưới sau đó sẽ trả về kết quả là chi phí vận hành và lượng cắt tải (nếu có) cho tầng trên.
+\end{itemize}
+
+Vòng lặp tương tác giữa hai tầng giúp các thuật toán AI ở tầng trên dần dần ``học'' được đâu là phương án đầu tư mang lại hiệu quả kinh tế cao nhất và đảm bảo an ninh năng lượng tốt nhất mà không cần phải hiểu trực tiếp các phương trình dòng điện phức tạp ở tầng dưới.
+
+\begin{figure}[!ht]
+    \centering
+    \usetikzlibrary{positioning, arrows.meta, shapes.geometric, calc}
+    \begin{tikzpicture}[
+        node distance=2.5cm and 2cm,
+        box/.style={rectangle, draw=blue!70, fill=blue!5, thick, rounded corners, text width=6.5cm, align=center, minimum height=2cm},
+        data/.style={cylinder, shape border rotate=90, aspect=0.25, draw=orange!80, fill=orange!10, thick, text width=3cm, align=center, minimum height=2cm},
+        arrow/.style={-{Stealth[scale=1.2]}, thick, draw=black!80},
+        darrow/.style={-{Stealth[scale=1.2]}, thick, dashed, draw=black!80}
+    ]
+
+    % Nodes
+    \node[box] (upper) {\textbf{Tầng trên (Upper Level)} \\ Học tăng cường / Tối ưu hóa Bayes \\ \textit{Hoạch định mở rộng nguồn điện (GEP)}};
+    
+    \node[box, below=2.5cm of upper] (lower) {\textbf{Tầng dưới (Lower Level)} \\ Quy hoạch tuyến tính (LP - HiGHS) \\ \textit{Mô phỏng Điều độ kinh tế (ED)}};
+    
+    \node[data, left=1.5cm of lower] (scenario) {Mô phỏng \\ Monte Carlo \\ \textit{(Nhiễu $\xi$)}};
+    
+    % Connections
+    \draw[arrow] (scenario.east) -- node[above, text width=2.5cm, align=center] {Các kịch bản \\ phụ tải, RE} (lower.west);
+    
+    % Upper to lower arrow
+    \draw[arrow] ([xshift=-1.5cm]upper.south) -- node[left, align=right] {Véctơ đầu tư $\mathbf{x}$ \\ (Công suất mới)} ([xshift=-1.5cm]lower.north);
+    
+    % Lower to upper arrow
+    \draw[arrow] ([xshift=1.5cm]lower.north) -- node[right, align=left] {Phản hồi kết quả \\ ($C_{\text{op}}^*$, $S_{\text{total}}$)} ([xshift=1.5cm]upper.south);
+    
+    % Loop back arrow for AI
+    \draw[arrow] (upper.east) -- ++(1.5,0) |- node[near start, right, align=left] {Cập nhật \\ chính sách} ++(0, 1.5) -| (upper.north);
+    
+    \end{tikzpicture}
+    \caption{Sơ đồ luồng thông tin trong kiến trúc tối ưu hóa lai hai tầng}
+    \label{fig:bilevel_pipeline}
+\end{figure}
+% ================================================================
+\section{Mô hình toán học tầng dưới cho bài toán điều độ kinh tế}
+% ================================================================
+
+Mục tiêu của bài toán tầng dưới là tối thiểu hóa tổng chi phí vận hành hệ thống và chi phí phạt do cắt tải, với điều kiện hệ thống đã được bổ sung thêm công suất từ quyết định đầu tư của tầng trên.
+
+\subsection{Tập hợp, tham số và biến quyết định}
+
+\textbf{Tập hợp (Sets):}
+\begin{itemize}
+    \item $\mathbf{Z}$: Tập hợp các vùng (Zones) trong hệ thống, chỉ số $z$.
+    \item $\mathbf{G}$: Tập hợp tất cả các máy phát điện (bao gồm cả hiện hữu và xây mới), chỉ số $i$. $\mathbf{G}_z$ là tập các máy phát thuộc vùng $z$.
+    \item $\mathbf{L}$: Tập hợp các đường dây truyền tải liên kết giữa các vùng, chỉ số cặp $(z, z')$.
+    \item $\mathbf{T}$: Tập hợp các khung giờ vận hành trong năm mô phỏng, chỉ số $t$.
+\end{itemize}
+
+\textbf{Tham số (Parameters):}
+\begin{itemize}
+    \item $D_z^t$: Nhu cầu phụ tải tại vùng $z$ trong giờ $t$ (MW).
+    \item $P_i^{\max}$: Công suất đặt tối đa của máy phát $i$ (MW). Đối với các máy phát được đầu tư mới, thông số này chính là biến quyết định được nhận từ tầng trên.
+    \item $c_i$: Chi phí biên vận hành của máy phát $i$ (\$/MWh), bao gồm cả thuế carbon đối với nhiên liệu hóa thạch.
+    \item $\text{CF}_i(t) \in [0, 1]$: Hệ số công suất khả dụng theo giờ của tổ máy $i$. Đối với điện mặt trời và điện gió, giá trị này biến thiên theo dữ liệu khí tượng. Đối với nhiệt điện, $\text{CF}_i(t) = 1$. Đối với hệ thống lưu trữ (BESS), $\text{CF}_i(t)$ đại diện cho tỷ lệ xả trung bình cho phép.
+    \item $F_{zz'}^{\max}$: Giới hạn công suất truyền tải tối đa trên hành lang liên vùng từ $z$ đến $z'$ (MW).
+    \item $\beta$: Giá trị tổn thất điện năng (Value of Lost Load -- VOLL), đại diện cho mức phạt kinh tế cho mỗi MWh bị cắt tải (\$/MWh).
+\end{itemize}
+
+\textbf{Biến quyết định (Decision Variables):}
+\begin{itemize}
+    \item $P_i^t$: Công suất phát thực tế của tổ máy $i$ trong giờ $t$ (MW).
+    \item $F_{zz'}^t$: Công suất truyền tải từ vùng $z$ sang vùng $z'$ trong giờ $t$ (MW).
+    \item $\Delta L_z^t$: Lượng công suất phụ tải bị cắt (Load shedding) tại vùng $z$ trong giờ $t$ (MW) nhằm tránh sụp đổ hệ thống khi cung không đủ cầu.
+\end{itemize}
+
+\subsection{Hàm mục tiêu và hệ ràng buộc}
+
+Hàm mục tiêu vận hành của tầng dưới được công thức hóa dưới dạng quy hoạch tuyến tính (LP) cho mỗi giờ $t$:
+\begin{equation}
+    C_{\text{op}}^t(\mathbf{x}) = \min_{P_i^t,\; F_{zz'}^t,\; \Delta L_z^t} \quad \left( \sum_{i \in \mathbf{G}} c_i \, P_i^t + \beta \sum_{z \in \mathbf{Z}} \Delta L_z^t \right)
+    \label{eq:lower_objective}
+\end{equation}
+
+Hệ phương trình này tuân thủ các ràng buộc vật lý cơ bản:
+
+\textbf{1. Cân bằng công suất từng vùng (Power Balance Constraint):}
+Tổng công suất phát nội vùng, cộng với điện năng truyền tải đến, trừ đi điện năng truyền tải đi, và cộng với lượng cắt tải phải bằng đúng nhu cầu phụ tải tại mọi thời điểm.
+\begin{equation}
+    \sum_{i \in \mathbf{G}_z} P_i^t + \sum_{z' \ne z} F_{z'z}^t - \sum_{z' \ne z} F_{zz'}^t + \Delta L_z^t = D_z^t, \quad \forall z \in \mathbf{Z}
+\end{equation}
+
+\textbf{2. Giới hạn công suất phát (Generation Limits):}
+Công suất phát không được vượt quá giới hạn đặt và bị phụ thuộc vào hệ số khả dụng thời tiết (đối với năng lượng tái tạo).
+\begin{equation}
+    0 \leq P_i^t \leq P_i^{\max}(\mathbf{x}) \cdot \text{CF}_i(t), \quad \forall i \in \mathbf{G}
+\end{equation}
+
+\textbf{3. Giới hạn truyền tải liên vùng (Transmission Limits):}
+\begin{equation}
+    -F_{zz'}^{\max} \leq F_{zz'}^t \leq F_{zz'}^{\max}, \quad \forall (z, z') \in \mathbf{L}
+\end{equation}
+
+\textbf{4. Điều kiện không âm của biến cắt tải:}
+\begin{equation}
+    \Delta L_z^t \geq 0, \quad \forall z \in \mathbf{Z}
+\end{equation}
+
+Việc giải hệ LP này trong suốt $T$ giờ vận hành sẽ cung cấp tổng chi phí vận hành $C_{\text{op}}^*(\mathbf{x}) = \sum_{t=1}^T C_{\text{op}}^t(\mathbf{x})$ và tổng lượng cắt tải $S_{\text{total}}(\mathbf{x}) = \sum_{t=1}^T \sum_z \Delta L_z^t$. Nhờ sự đơn giản hóa cấu trúc không gian (zonal model) và tính chất lồi của quy hoạch tuyến tính, bộ giải (ví dụ như HiGHS solver) có thể trả về kết quả cực kỳ nhanh chóng với độ chính xác toàn cục, tạo nền tảng vững chắc cho việc đánh giá lặp lại ở tầng trên.
+
+% ================================================================
+\section{Mô hình toán học tầng trên cho bài toán quy hoạch mở rộng nguồn điện}
+% ================================================================
+
+Tầng trên chịu trách nhiệm quyết định đầu tư công suất. Mục tiêu là tối thiểu hóa tổng chi phí của toàn hệ thống (Bao gồm chi phí đầu tư dài hạn và chi phí vận hành ngắn hạn do tầng dưới phản hồi).
+
+\subsection{Biến quyết định của bài toán đầu tư}
+
+Cho tập hợp các công nghệ xây dựng mới $\mathbf{K} = \{ \text{Solar}, \text{Wind}, \text{Gas\_CCS}, \text{Battery} \}$, biến quyết định của tầng trên là véctơ đầu tư $\mathbf{x}$:
+\begin{equation}
+    \mathbf{x} = [x_{z,k}], \quad \forall z \in \mathbf{Z}, \; \forall k \in \mathbf{K}
+\end{equation}
+trong đó $x_{z,k} \ge 0$ là quy mô công suất (MW) của công nghệ $k$ sẽ được xây dựng mới tại vùng $z$. Không gian tìm kiếm bị giới hạn bởi tiềm năng phát triển tối đa của từng vùng $x_{z,k} \le X_{z,k}^{\max}$.
+
+\subsection{Hàm mục tiêu tổng quát của tầng trên}
+
+Để có thể cộng trực tiếp chi phí đầu tư ban đầu (CAPEX) với chi phí vận hành hàng năm (OPEX), đề tài áp dụng phương pháp niên kim hóa thông qua nhân tử thu hồi vốn $\text{CRF}(r, n_k)$. Chi phí đầu tư quy đổi hàng năm được tính như sau:
+\begin{equation}
+    C_{\text{inv}}(\mathbf{x}) = \sum_{z \in \mathbf{Z}} \sum_{k \in \mathbf{K}} x_{z,k} \cdot \text{CAPEX}_k \cdot \text{CRF}(r, n_k)
+\end{equation}
+
+Dựa trên phản hồi từ tầng dưới, hàm mục tiêu tổng (hay Điểm phạt -- Penalty Score) mà tầng trên cần tối thiểu hóa là:
+\begin{equation}
+    J(\mathbf{x}) = \alpha \Big[ C_{\text{inv}}(\mathbf{x}) + C_{\text{op}}^*(\mathbf{x}) \Big] + \beta \cdot S_{\text{total}}(\mathbf{x})
+    \label{eq:upper_objective}
+\end{equation}
+trong đó $\alpha$ là hệ số trọng số cho chi phí tài chính (thường đặt là 1.0) và $\beta$ là hình phạt rất lớn khi để xảy ra tình trạng cắt điện (VOLL).
+
+Do $C_{\text{op}}^*(\mathbf{x})$ và $S_{\text{total}}(\mathbf{x})$ là nghiệm của một bài toán tối ưu khác ở tầng dưới nên hàm $J(\mathbf{x})$ không có dạng biểu thức giải tích tường minh (implicit function) và cũng không thể lấy đạo hàm $\nabla J$ theo $\mathbf{x}$. $J(\mathbf{x})$ chính thức trở thành một **hàm hộp đen (black-box function)**.
+
+% ================================================================
+\section{Mô hình hóa tính bất định thông qua phân tích kịch bản Monte Carlo}
+% ================================================================
+
+Lưới điện hiện đại đối mặt với tính bất định sâu sắc từ nhu cầu phụ tải và sự biến thiên của năng lượng tái tạo. Nếu hệ thống chỉ tối ưu trên một bộ dữ liệu tĩnh (deterministic), phương án đầu tư có thể rất rẻ nhưng sẽ sụp đổ khi có các dị thường thời tiết (ví dụ: chuỗi ngày ít gió và râm mát).
+
+Để đảm bảo tính bền vững (Robustness), đề tài áp dụng mô phỏng Monte Carlo. Tầng dưới không chỉ chạy trên một hồ sơ tĩnh mà đối với mỗi quyết định $\mathbf{x}$, hệ thống sinh ra một tập hợp $N$ kịch bản ngẫu nhiên (scenarios) đại diện cho các nhiễu động $\xi$:
+\begin{itemize}
+    \item \textbf{Phụ tải:} Chèn nhiễu tương quan chuỗi thời gian (autocorrelated noise) để mô phỏng những ngày nóng bất thường hoặc lạnh cực đoan, cộng thêm nhiễu ngẫu nhiên từng giờ.
+    \item \textbf{Điện mặt trời:} Mô phỏng hiệu ứng mây che phủ ngẫu nhiên kéo dài vài giờ làm giảm mạnh công suất.
+    \item \textbf{Điện gió:} Thêm nhiễu ngẫu nhiên với độ trễ để mô phỏng các cơn gió giật hoặc hiện tượng lặng gió không dự báo trước.
+\end{itemize}
+
+Hàm mục tiêu được chuyển thành cực tiểu hóa giá trị kỳ vọng trên toàn bộ $N$ kịch bản:
+\begin{equation}
+    \mathbf{x}^* = \arg\min_{\mathbf{x}} \left( \alpha \, C_{\text{inv}}(\mathbf{x}) + \frac{1}{N} \sum_{i=1}^N \Big[ \alpha \, C_{\text{op}}^*(\mathbf{x}, \xi_i) + \beta \, S_{\text{total}}(\mathbf{x}, \xi_i) \Big] \right)
+\end{equation}
+Việc đánh giá ngẫu nhiên này bắt buộc tầng trên phải tìm kiếm các phương án đầu tư có đủ mức dự phòng để ``sống sót'' qua các tình huống xấu nhất, dù chi phí đầu tư ban đầu có thể cao hơn.
+
+% ================================================================
+\chapter{Phương pháp giải bài toán}
+\label{chap:solution-method}
+
+Chương này trình bày các phương pháp được sử dụng để giải bài toán tối ưu hóa hộp đen ở tầng trên sau khi mô hình toán học đã được xác lập. Trọng tâm bao gồm các thuật toán AI, đặc tả môi trường tương tác cho học tăng cường, và quy trình phần mềm hiện thực hóa toàn bộ pipeline tính toán.
+
+% ================================================================
+\section{Phương pháp giải bài toán tối ưu hộp đen ở tầng trên}
+% ================================================================
+
+Việc giải quyết hàm hộp đen nhiều chiều có tính bất định cao là thách thức lớn. Đề tài đề xuất triển khai và so sánh hai phương pháp Trí tuệ nhân tạo tiên tiến để giải quyết bài toán tầng trên:
+
+\subsection{Tối ưu hóa Bayes (Bayesian Optimization - BO)}
+Tối ưu hóa Bayes đặc biệt hiệu quả với các hàm đánh giá chi phí cao (expensive-to-evaluate functions). Thay vì duyệt mù quáng, BO sử dụng thuật toán TPE (Tree-structured Parzen Estimator) qua thư viện Optuna để xây dựng mô hình xác suất học các vùng có tiềm năng tốt.
+
+Quá trình hoạt động: Thuật toán xây dựng các phân phối xác suất dự đoán điểm phạt của các cấu hình đầu tư. Từ đó, hàm thu thập (Acquisition Function) sẽ tự động sinh ra tọa độ $\mathbf{x}$ tiếp theo cần được giải LP sao cho cân bằng giữa việc khai thác vùng đang có chi phí thấp nhất và khám phá những vùng không gian mới. Nhờ sự thông minh này, hệ thống chỉ cần khoảng 100 đến 200 lượt chạy mô phỏng (tương đương 100-200 vòng lặp LP) là có thể hội tụ nghiệm tối ưu, vượt trội hoàn toàn về tốc độ so với các phương pháp meta-heuristic truyền thống.
+
+\subsection{Học tăng cường (Reinforcement Learning - RL)}
+Hướng tiếp cận thứ hai là xây dựng hệ thống tác tử (Agent) thông qua Quá trình quyết định Markov (MDP) và huấn luyện bằng PPO / SAC sử dụng Stable-Baselines3.
+
+Bài toán được cấu trúc thành môi trường tương tác (Gymnasium Environment):
+\begin{itemize}
+    \item \textbf{Không gian trạng thái (State Space):} Tác tử quan sát hiện trạng hệ thống thông qua các đặc trưng đã chuẩn hóa: công suất hiện hữu tổng, phụ tải đỉnh, phụ tải trung bình và biên dự phòng (reserve margin) của từng vùng riêng biệt và tổng thể.
+    \item \textbf{Không gian hành động (Action Space):} Hành động của tác tử trong một tập (episode) chính là xuất ra véctơ đầu tư liên tục $\mathbf{x} = [x_{z,k}]$.
+    \item \textbf{Phần thưởng (Reward):} Hệ thống phản hồi lại cho tác tử giá trị phần thưởng tỉ lệ nghịch với điểm phạt: $r = -J(\mathbf{x}) / 10^6$. Nếu xảy ra cắt điện, điểm phạt $J$ tăng vọt, phần thưởng rơi xuống mức âm sâu, khiến tác tử học được bài học phải xây đủ công suất để đảm bảo độ tin cậy.
+\end{itemize}
+
+Bằng cách huấn luyện qua hàng ngàn kịch bản (episodes), mạng nơ-ron của tác tử (Policy Network) sẽ liên kết được các đặc điểm hiện trạng của lưới điện với các hành động đầu tư tương ứng. So với BO, phương pháp RL tốn nhiều chi phí huấn luyện ban đầu hơn, nhưng mạng nơ-ron thu được lại có khả năng \textit{suy luận siêu tốc (zero-shot inference)} khi phải đưa ra quyết định cho các hệ thống điện có đặc trưng tương tự trong tương lai.
+
+
+
+% ================================================================
+\section{Đặc tả môi trường tương tác cho bài toán học tăng cường}
+% ================================================================
+
+Để thuật toán Học tăng cường (PPO, SAC) có thể tương tác và học hỏi, toàn bộ hệ thống điện và bài toán tối ưu hai tầng được gói gọn lại thành một môi trường chuẩn hóa theo chuẩn \textbf{Gymnasium}. 
+
+\subsection{Không gian quan sát}
+Thay vì để tác tử nhìn thấy toàn bộ ma trận dữ liệu khổng lồ của lưới điện, hệ thống trích xuất một véctơ trạng thái $\mathbf{s}$ chứa các đặc trưng cốt lõi mang tính tóm tắt và được chuẩn hóa về dải $[-1, 1]$:
+\begin{itemize}
+    \item \textbf{Đặc trưng cấp vùng (Zonal Features):} Đối với mỗi vùng $z$, véctơ trạng thái chứa 4 giá trị:
+    \begin{enumerate}
+        \item Công suất hiện hữu: $C_{z}^{\text{exist}} / C_{\text{max\_sys}}$
+        \item Phụ tải đỉnh: $D_{z}^{\text{peak}} / D_{\text{max\_sys}}$
+        \item Phụ tải trung bình: $\bar{D}_{z} / D_{\text{max\_sys}}$
+        \item Biên dự phòng (Reserve Margin): $(C_{z}^{\text{exist}} - D_{z}^{\text{peak}}) / \max(1, D_{z}^{\text{peak}})$
+    \end{enumerate}
+    \item \textbf{Đặc trưng cấp hệ thống (Global Features):} Gồm 3 giá trị: Tổng công suất hệ thống, Tổng phụ tải đỉnh hệ thống, và Hệ số phụ tải (Load Factor).
+\end{itemize}
+Với hệ thống 3 vùng, véctơ trạng thái sẽ có độ dài là $3 \times 4 + 3 = 15$ chiều. Sự cô đọng này giúp mạng nơ-ron hội tụ nhanh hơn và giảm thiểu hiện tượng quá khớp (overfitting).
+
+\subsection{Không gian hành động và cơ chế phần thưởng}
+\begin{itemize}
+    \item \textbf{Hành động $\mathbf{a}$:} Là véctơ công suất đầu tư liên tục, ví dụ với 3 vùng và 4 công nghệ, $\mathbf{a} \in \mathbb{R}^{12}$. Tác tử sẽ đưa ra các giá trị trong giới hạn công suất cho phép (ví dụ: tối đa 2000 MW cho Điện mặt trời mỗi vùng).
+    \item \textbf{Cơ chế phần thưởng (Reward Shaping):} Hàm phần thưởng được thiết kế trực tiếp từ hàm phạt tổng quát của bài toán (Phương trình \ref{eq:upper_objective}):
+    \begin{equation}
+        r = - \frac{J(\mathbf{x})}{10^6} = - \frac{\alpha \big[C_{\text{inv}}(\mathbf{x}) + C_{\text{op}}^*(\mathbf{x})\big] + \beta \cdot S_{\text{total}}(\mathbf{x})}{10^6}
+    \end{equation}
+    Việc chia cho $10^6$ giúp chuẩn hóa thang đo của phần thưởng (từ hàng tỷ USD về mức một chữ số), giúp bộ tối ưu hóa Adam trong mạng nơ-ron hoạt động ổn định và không bị nổ gradient (gradient explosion).
+\end{itemize}
+
+% ================================================================
+\section{Thiết kế hệ thống và quy trình triển khai tính toán}
+% ================================================================
+
+Để hiện thực hóa mô hình toán học trên thành một hệ thống mô phỏng và tối ưu hóa hoàn chỉnh, đề tài thiết kế một cấu trúc phần mềm (Software Pipeline) tự động với các phân hệ (modules) độc lập:
+
+\begin{enumerate}
+    \item \textbf{Phân hệ Dữ liệu (Data Module):} Xử lý dữ liệu thô (chuỗi thời gian phụ tải, tham số mạng lưới) thành các cấu trúc dữ liệu đối tượng (\texttt{SystemData}, \texttt{ZonalData}). Tích hợp bộ sinh kịch bản ngẫu nhiên (\texttt{ScenarioGenerator}) để tạo ra đa dạng các mẫu thời tiết và phụ tải theo mô hình toán học tích hợp nhiễu (noise addition).
+    \item \textbf{Phân hệ Tầng dưới (Lower Level Module):} Đóng vai trò giải bài toán LP (Economic Dispatch). Phân hệ này sử dụng thư viện \texttt{scipy.optimize.linprog} với backend là bộ giải \textbf{HiGHS} -- một trong những bộ giải mã nguồn mở tốt nhất hiện nay cho LP. Bằng cách chia nhỏ 8784 giờ thành các khối (batches) hoặc giải tuần tự, hệ thống đảm bảo tiêu thụ bộ nhớ tối thiểu.
+    \item \textbf{Phân hệ Tầng trên (Upper Level Module):} Tích hợp các thuật toán AI. Đối với BO, thư viện \texttt{Optuna} được sử dụng để chạy thuật toán TPE. Đối với RL, thư viện \texttt{Stable-Baselines3} quản lý mạng nơ-ron Actor-Critic và thực thi việc tính toán gradient.
+\end{enumerate}
+
+\textbf{Đánh giá độ phức tạp thuật toán:} Với hệ thống 3 vùng, mỗi giờ vận hành cần giải một bài toán LP có $N_{\text{var}} = N_{\text{gen}} + N_{\text{lines}} + N_{\text{zones}}$ biến. Khi chạy mô phỏng ngẫu nhiên (ví dụ 5 kịch bản Monte Carlo cho 8784 giờ), một lần đánh giá hàm mục tiêu ở tầng trên yêu cầu giải $5 \times 8784 = 43,920$ bài toán LP. Sự kết hợp giữa bộ giải HiGHS siêu tốc và số lượng lần đánh giá giới hạn thông minh của Bayesian Optimization/RL chính là điểm tựa kỹ thuật giúp toàn bộ hệ thống khả thi trong thời gian chạy thực tế.
+
+\vspace{1cm}
+\textbf{Tóm lại,} cấu trúc lai hai tầng kết hợp giữa sự tối ưu linh hoạt không cần đạo hàm của AI ở tầng quyết định dài hạn (Upper Level) và sự chính xác toán học chặt chẽ của Quy hoạch tuyến tính ở tầng vận hành ngắn hạn (Lower Level) chính là chìa khóa để đề tài giải quyết trọn vẹn và thực tiễn bài toán GEP.

@@ -33,7 +33,10 @@
 \RequirePackage{amssymb}
 \RequirePackage{amsmath}
 \RequirePackage{mathtools}
-\RequirePackage{mathspec} %loads fontspec as well
+% \RequirePackage{mathspec} % XeLaTeX only
+\RequirePackage[T5]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{mathptmx} % Robust Times font for pdflatex (supports T5 bold)
 
 \RequirePackage[numbers, square, comma, sort&compress]{natbib}
 
@@ -119,14 +122,17 @@
 % \setmathsfont(Digits)[Numbers={Proportional}, ExternalLocation=fonts/, Scale=0.95]{MinionPro-Regular}
 % \setmathrm[ExternalLocation=fonts/]{MinionPro-Regular}
 
-% use Arno Pro instead of standard LaTeX fonts for math display
-\setmainfont{Times New Roman}
+% Font definitions for pdflatex fallback
+\newcommand{\arnosubhead}{\bfseries}
+\newcommand{\arno}{\bfseries}
+\newcommand{\arnobody}{\normalfont}
+\newcommand{\arnoitalic}{\itshape}
 
-% Fonts for titles
-\newfontfamily{\arnosubhead}[Path=./fonts/]{Arno Pro Subhead}
-\newfontfamily{\arno}[Path=./fonts/]{Arno Pro Smbd}
-\newfontfamily{\arnobody}[Path=./fonts/]{Arno Pro}
-\newfontfamily{\arnoitalic}[Path=./fonts/]{Arno Pro Italic}
+% \setmainfont{Times New Roman}
+% \newfontfamily{\arnosubhead}[Path=./fonts/]{Arno Pro Subhead}
+% \newfontfamily{\arno}[Path=./fonts/]{Arno Pro Smbd}
+% \newfontfamily{\arnobody}[Path=./fonts/]{Arno Pro}
+% \newfontfamily{\arnoitalic}[Path=./fonts/]{Arno Pro Italic}
 
 \titleformat{\chapter}[display]
   {\arno\Huge}
@@ -308,13 +314,13 @@
 % 	\pagenumbering{roman}
 % 	\setcounter{page}{3}
 	\pagestyle{fancy}
-	\lhead{\isenglish[#1]{Thesis advisor}{Giảng viên hướng dẫn}: \@advisor} \rhead{\@author}
+	% \lhead{\isenglish[#1]{Thesis advisor}{Giảng viên hướng dẫn}: \@advisor} \rhead{\@author}
 	\renewcommand{\headrulewidth}{0.0pt} 
 	\begin{center}
 	%\vspace*{1pt}
 	%\Large \textcolor{Crimson}{\textit{\@title}} \normalsize\\
 	\vspace*{15pt}
-	\bf \isenglish[#1]{Abstract}{Lời nói đầu} \\ \rm
+	\bf \isenglish[#1]{Abstract}{Tóm tắt nội dung đồ án} \\ \rm
 	\end{center}
 	\onehalfspacing %Harvard registrar requests that abstract is double spaced
 	#2
@@ -378,8 +384,8 @@
 }
 
 % \dotline and \dotfill
-\def\dotfill#1{\cleaders\hbox to #1{.}\hfill}
-\newcommand\dotline[2][.5em]{\leavevmode\hbox to #2{\dotfill{#1}\hfil}}
+\newcommand{\hustdotfill}[1]{\cleaders\hbox to #1{.}\hfill}
+\newcommand\dotline[2][.5em]{\leavevmode\hbox to #2{\hustdotfill{#1}\hfil}}
 
 \renewenvironment{savequote}[1][10cm]{%
 \begin{lrbox}{\@quotebox}
@@ -402,25 +408,11 @@
 \renewcommand\bibname{References}
 \renewcommand\listfigurename{Listing of Figures}
 
-% undo the wrong changes made by mathspec
-\makeatletter 
-\let\RequirePackage\original@RequirePackage
-\let\usepackage\RequirePackage
-\makeatother
+% undo the wrong changes made by mathspec (not applicable for pdflatex)
+% \makeatletter 
+% \let\RequirePackage\original@RequirePackage
+% \let\usepackage\RequirePackage
+% \makeatother
 
 \renewcommand{\glsmcols}{2}
 \setglossarystyle{mcolindex}
-
-
-\usepackage{xcolor} % Thêm gói này để có nhiều lựa chọn màu hơn (tùy chọn)
-
-\usepackage{hyperref}
-\hypersetup{
-    % colorlinks=true,    % Bật màu cho các liên kết
-    % linkcolor=blue,     % Màu cho các liên kết nội bộ (mục lục, \ref, \eqref)
-    % filecolor=magenta,  % Màu cho liên kết đến tệp cục bộ
-    % urlcolor=cyan,      % Màu cho các URL
-    citecolor=magenta,    % <<<<<< MÀU CHO TRÍCH DẪN (BAO GỒM NGOẶC)
-    % pdftitle={Báo cáo dự án},
-    % pdfpagemode=FullScreen,
-}
