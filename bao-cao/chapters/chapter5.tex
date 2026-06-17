@@ -1,0 +1,206 @@
+\chapter{Kết quả thực nghiệm và thảo luận}
+\label{chap:results}
+
+\captionsetup[subfigure]{font=small}
+
+Chương này trình bày kết quả thực nghiệm từ quy trình tối ưu hóa hai cấp trên hệ thống WECC 3 vùng. Các bảng và hình trong chương được tổng hợp từ cùng một lần thực nghiệm, bao gồm kết quả đánh giá trên các kịch bản chính, đánh giá quy mô lớn và mô hình PPO đã huấn luyện. Các phương pháp được so sánh gồm phương án không đầu tư, KKT-LP làm mốc tham chiếu, Bilevel-BO dùng TPE với 500 lượt đánh giá và PPO-500 dùng học tăng cường với 500 lượt huấn luyện.
+
+Các thí nghiệm chính dùng 12 ngày đại diện, tương đương 288 giờ vận hành. Riêng kịch bản bền vững được đánh giá bổ sung trên một bộ 20 mẫu Monte Carlo cố định để các phương án có thể được so sánh trên cùng phân phối nhiễu.
+
+% ============================================================
+\section{Thiết lập thực nghiệm}
+% ============================================================
+
+Dữ liệu đầu vào được lấy từ bộ dữ liệu WECC của Zhang và Li \cite{zhang2023dataset} và được tiền xử lý trong đồ án thành mô hình lưới xấp xỉ 180 bus. Trong cách gọi này, bus được hiểu là nút điện của mô hình tính toán, không phải tên gọi chính thức mà bài báo gốc bắt buộc sử dụng. Sau bước gom nhóm phục vụ điều độ theo vùng, mô hình sử dụng 179 bus có phụ tải, 29 máy phát hiện hữu, 263 đường dây và 3 vùng truyền tải. Các công nghệ đầu tư mới gồm điện mặt trời, điện gió, Gas-CCS và pin lưu trữ BESS. Hàm mục tiêu là điểm phạt tổng hợp đã định nghĩa ở chương phương pháp, bao gồm chi phí đầu tư niên kim hóa, chi phí điều độ/phát điện và thành phần phạt cắt tải với VOLL bằng $10\,000$ \$/MWh. Trong các bảng dưới đây, cột chi phí điều độ được trình bày riêng với lượng cắt tải để làm rõ đánh đổi giữa chi phí và độ tin cậy.
+
+Bốn nhóm kịch bản được sử dụng trong thực nghiệm. Kịch bản cơ sở giữ nguyên hệ thống hiện hữu và không áp thêm cú sốc phụ tải hay chính sách carbon. Kịch bản chuyển dịch xanh giảm 50\% công suất nhiệt hiện hữu và áp thuế carbon cao. Kịch bản tương lai căng thẳng tăng phụ tải 50\%, giảm 30\% công suất nhiệt và áp thuế carbon mức vừa. Kịch bản bền vững tăng phụ tải 30\%, giảm 20\% công suất nguồn hiện hữu và đưa nhiễu Monte Carlo vào phụ tải, điện mặt trời và điện gió.
+
+Các phương pháp so sánh gồm phương án không đầu tư, KKT-LP, Bilevel-BO và PPO-500. Phương án không đầu tư giữ nguyên công suất hiện hữu để làm mốc kiểm tra nhu cầu mở rộng. KKT-LP là quy hoạch cận biên dựa trên điều kiện KKT của bài toán vận hành tuyến tính cấp dưới. Bilevel-BO dùng tối ưu hóa Bayes theo TPE với 500 lượt đánh giá. PPO-500 dùng tác tử học tăng cường huấn luyện 500 lượt; do môi trường là bài toán một bước, mỗi lượt tương ứng với một phương án đầu tư được gửi xuống bài toán vận hành.
+
+% ============================================================
+\section{Kết quả trên các kịch bản xác định}
+% ============================================================
+
+Bảng~\ref{tab:deterministic_results} tổng hợp ba kịch bản không dùng nhiễu Monte Carlo. Ở kịch bản cơ sở, hệ thống hiện hữu không có cắt tải nên mọi phương pháp hợp lý đều quy về phương án không đầu tư. Hai kịch bản còn lại mới thể hiện rõ khác biệt giữa các chiến lược tìm kiếm. Trong các bảng kết quả, giá trị tốt nhất được in đậm và giá trị tốt thứ hai được gạch chân; với chi phí, cắt tải và độ lệch chuẩn thì giá trị nhỏ hơn được xem là tốt hơn, còn với phần trăm cải thiện thì giá trị lớn hơn được xem là tốt hơn.
+
+\begin{table}[!ht]
+    \centering
+    \caption{Kết quả trên các kịch bản xác định, 12 ngày đại diện.}
+    \label{tab:deterministic_results}
+    \scriptsize
+    \begin{tabular}{llrrrrr}
+        \hline
+        \textbf{Kịch bản} & \textbf{Phương pháp} & \textbf{Điểm phạt} & \textbf{Đầu tư} & \textbf{Điều độ} & \textbf{Cắt tải} & \textbf{Thời gian} \\
+        & & (tỷ USD) & (tỷ USD) & (tỷ USD) & (GWh) & (s) \\
+        \hline
+        \textbf{Cơ sở} & Không đầu tư & 0.033 & 0.000 & 0.033 & 0.000 & -- \\
+        & KKT-LP (mốc) & 0.033 & 0.000 & 0.033 & 0.000 & -- \\
+        & Bilevel-BO (đề xuất) & 0.033 & 0.000 & 0.033 & 0.000 & 246.4 \\
+        & PPO-500 (đề xuất) & 0.033 & 0.000 & 0.033 & 0.000 & 208.3 \\
+        \hline
+        \textbf{Chuyển dịch xanh} & Không đầu tư & 7.584 & 0.000 & 4.090 & 349.364 & -- \\
+        & KKT-LP (mốc) & 4.650 & 1.191 & 1.988 & 147.058 & -- \\
+        & Bilevel-BO (đề xuất) & \textbf{4.130} & 1.110 & 1.767 & \textbf{125.336} & 273.7 \\
+        & PPO-500 (đề xuất) & \underline{4.206} & 1.127 & 1.794 & \underline{128.457} & 244.1 \\
+        \hline
+        \textbf{Tương lai} & Không đầu tư & 15.607 & 0.000 & 7.934 & 767.330 & -- \\
+        & KKT-LP (mốc) & \underline{8.488} & 1.766 & 3.484 & \underline{323.753} & -- \\
+        & Bilevel-BO (đề xuất) & \textbf{8.282} & 1.850 & 3.340 & \textbf{309.124} & 281.8 \\
+        & PPO-500 (đề xuất) & 8.803 & 1.989 & 3.530 & 328.437 & 205.4 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Kết quả cho thấy Bilevel-BO, KKT-LP và PPO-500 sau khi chuẩn hóa hành động đều tìm được phương án mở rộng có ý nghĩa khi hệ thống xuất hiện thiếu hụt công suất. Khi Bilevel-BO được chạy cùng ngân sách 500 lượt đánh giá với PPO-500, phương pháp này đạt điểm phạt thấp nhất trong cả hai kịch bản xác định có căng thẳng: $4.130$ tỷ USD ở chuyển dịch xanh và $8.282$ tỷ USD ở kịch bản tương lai. Trong kịch bản chuyển dịch xanh, Bilevel-BO giảm $45.5\%$ điểm phạt so với không đầu tư và giảm cắt tải từ $349.364$ GWh xuống $125.336$ GWh; PPO-500 đạt $4.206$ tỷ USD, rất sát Bilevel-BO. Trong kịch bản tương lai, Bilevel-BO cũng vượt KKT-LP và PPO-500 nhờ giảm cắt tải xuống $309.124$ GWh với mức đầu tư thấp hơn PPO-500.
+
+So với thiết kế ban đầu, PPO-500 không còn hội tụ về các hành động vài MW. Việc chuẩn hóa hành động trong khoảng $[0,1]$ rồi giải nén sang MW giúp tác tử khám phá đúng thang quy mô đầu tư: khoảng $10.9$ GW trong kịch bản chuyển dịch xanh và $17.3$ GW trong kịch bản tương lai. Tuy nhiên, PPO vẫn dao động mạnh hơn BO vì mỗi lượt huấn luyện chỉ là một quyết định một bước và tín hiệu thưởng đến từ một bài toán LP hộp đen.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.85\linewidth]{results_chap5/chap5_penalty_comparison.png}
+    \caption{So sánh điểm phạt giữa các phương pháp trên bốn kịch bản chính.}
+    \label{fig:chap5_penalty_comparison}
+\end{figure}
+
+% ============================================================
+\section{Kịch bản bền vững dưới bất định Monte Carlo}
+% ============================================================
+
+Vì kịch bản bền vững dùng nhiễu ngẫu nhiên, các phương án được đánh giá lại trên cùng một bộ 20 mẫu Monte Carlo cố định. Cách đánh giá này tránh việc so sánh một nghiệm trên các mẫu ngẫu nhiên khác nhau.
+
+\begin{table}[!ht]
+    \centering
+    \caption{Đánh giá bền vững trên 20 mẫu Monte Carlo cố định.}
+    \label{tab:robust_mc20_results}
+    \scriptsize
+    \begin{tabular}{lrrrr}
+        \hline
+        \textbf{Phương pháp} & \textbf{Điểm phạt kỳ vọng} & \textbf{Đầu tư} & \textbf{Điều độ} & \textbf{Cắt tải kỳ vọng} \\
+        & (tỷ USD) & (tỷ USD) & (tỷ USD) & (GWh) \\
+        \hline
+        Không đầu tư & 3.769 & 0.000 & 2.029 & 173.957 \\
+        KKT-LP (mốc) & 3.075 & 1.543 & 0.883 & \textbf{64.821} \\
+        Bilevel-BO (đề xuất) & \underline{3.031} & 0.804 & 1.245 & \underline{98.225} \\
+        PPO-500 (đề xuất) & \textbf{2.995} & 0.717 & 1.271 & 100.712 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Trong kịch bản bền vững MC20, PPO-500 đạt điểm phạt kỳ vọng thấp nhất trong bốn phương án được so sánh ($2.995$ tỷ USD). Bilevel-BO có điểm phạt $3.031$ tỷ USD, thấp hơn KKT-LP nhưng cao hơn PPO-500 trên bộ 20 mẫu cố định này. Bilevel-BO đầu tư $0.804$ tỷ USD và giảm cắt tải xuống $98.225$ GWh; PPO-500 đầu tư ít hơn ($0.717$ tỷ USD) nhưng cắt tải cao hơn một chút ($100.712$ GWh), nhờ đó tổng điểm phạt vẫn nhỉnh hơn Bilevel-BO. KKT-LP đầu tư nhiều hơn, giảm cắt tải mạnh hơn cả hai phương pháp đề xuất, nhưng phần tiết kiệm vận hành không đủ bù chi phí vốn tăng thêm.
+
+Kết quả này phù hợp với cấu trúc bài toán: quy hoạch bền vững dưới bất định yêu cầu đánh đổi giữa độ tin cậy và chi phí đầu tư. Nếu chỉ tối thiểu hóa cắt tải, KKT-LP có vẻ hấp dẫn hơn; nếu xét đúng điểm phạt tổng hợp, các nghiệm Bilevel-BO và PPO-500 tiết chế vốn hơn lại hiệu quả hơn trên kỳ vọng.
+
+% ============================================================
+\section{Động lực hội tụ}
+% ============================================================
+
+Hình~\ref{fig:chap5_convergence} biểu diễn đường nghiệm tốt nhất lũy tiến của Bilevel-BO và PPO-500 trên ba kịch bản có căng thẳng. Với Bilevel-BO, nghiệm tốt nhất xuất hiện ở lượt 444 trong kịch bản chuyển dịch xanh, lượt 422 trong kịch bản tương lai và lượt 376 trong kịch bản bền vững. Với PPO-500 sau chuẩn hóa hành động, nghiệm tốt nhất xuất hiện ở lượt 498 cho chuyển dịch xanh, lượt 71 cho tương lai và lượt 189 cho kịch bản bền vững. Đường hội tụ của PPO-500 vẫn nhiễu hơn Bilevel-BO, nhưng mức tốt nhất đã nằm cùng thang chất lượng với các phương pháp tối ưu hộp đen.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{results_chap5/chap5_convergence_summary.png}
+    \caption{Đường hội tụ nghiệm tốt nhất lũy tiến của Bilevel-BO và PPO-500 trên các kịch bản có căng thẳng. Trục tung dùng thang log để thể hiện cùng lúc các mức điểm phạt khác nhau.}
+    \label{fig:chap5_convergence}
+\end{figure}
+
+Nhìn từ hiệu quả mẫu, Bilevel-BO vẫn ổn định hơn với bài toán quy hoạch tĩnh một bước vì cơ chế TPE tận dụng trực tiếp lịch sử mẫu tốt. PPO-500 trở nên cạnh tranh hơn sau khi sửa thang hành động, nhưng vẫn cần nhiều lượt huấn luyện và nhạy với nhiễu Monte Carlo hơn. Điều này cho thấy chất lượng thiết kế môi trường học tăng cường, đặc biệt là chuẩn hóa hành động và cách đánh giá phần thưởng, có ảnh hưởng quyết định đến kết quả.
+
+% ============================================================
+\section{Đánh giá quy mô lớn trên 800 kịch bản}
+\label{sec:large_scale_eval}
+% ============================================================
+
+Để kiểm tra khả năng khái quát hóa ngoài các kịch bản huấn luyện, 800 kịch bản ngẫu nhiên được sinh thành 8 nhóm, mỗi nhóm 100 kịch bản. Mỗi kịch bản vẫn dùng 12 ngày đại diện. Các nghiệm Bilevel-BO và PPO-500 được ánh xạ theo kịch bản huấn luyện gần nhất và được đánh giá lại cùng phương án không đầu tư và KKT-LP.
+
+Bảng~\ref{tab:large_scale_results} trình bày phần trăm cải thiện so với không đầu tư. Giá trị dương nghĩa là phương án đang xét làm giảm điểm phạt tổng hợp hoặc điện năng cắt tải so với mốc không đầu tư.
+
+\begin{table}[!ht]
+    \centering
+    \caption{Kết quả đánh giá 800 kịch bản: phần trăm cải thiện so với không đầu tư.}
+    \label{tab:large_scale_results}
+    \scriptsize
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{clrrrrrr}
+        \hline
+        \textbf{Nhóm} & \textbf{Kịch bản} &
+        \multicolumn{2}{c}{\textbf{KKT-LP (mốc)}} &
+        \multicolumn{2}{c}{\textbf{Bilevel-BO (đề xuất)}} &
+        \multicolumn{2}{c}{\textbf{PPO-500 (đề xuất)}} \\
+        \cline{3-8}
+        & & $\Delta$ Điểm phạt\% & $\Delta$ Cắt tải\% & $\Delta$ Điểm phạt\% & $\Delta$ Cắt tải\% & $\Delta$ Điểm phạt\% & $\Delta$ Cắt tải\% \\
+        \hline
+        G0 & Không cú sốc & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
+        G1 & Tăng trưởng phụ tải nhẹ & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
+        G2 & Tăng trưởng phụ tải trung bình & \textbf{-74.9} & \underline{91.7} & \underline{-2382.1} & \textbf{100.0} & -2560.3 & \textbf{100.0} \\
+        G3 & Tăng trưởng phụ tải cao & \textbf{-157.3} & 71.2 & \underline{-413.9} & \textbf{92.6} & -451.2 & \underline{90.2} \\
+        G4 & Chính sách carbon nhẹ & \textbf{0.0} & 0.0 & \underline{-521.3} & 0.0 & -529.3 & 0.0 \\
+        G5 & Chính sách carbon nặng & \textbf{0.0} & 0.0 & \underline{-282.7} & 0.0 & -287.0 & 0.0 \\
+        G6 & Nghỉ hưu máy phát & \textbf{-100.8} & \underline{66.5} & -130.3 & \textbf{69.1} & \underline{-111.8} & 67.0 \\
+        G7 & Đa cú sốc kết hợp & \textbf{-26.6} & 63.6 & \underline{-57.9} & \textbf{77.5} & -69.8 & \underline{74.0} \\
+        \hline
+    \end{tabular}}
+\end{table}
+
+Mỗi dòng trong Bảng~\ref{tab:large_scale_results} là giá trị trung bình của 100 kịch bản thuộc cùng một nhóm. Để bổ sung thông tin về mức phân tán, Bảng~\ref{tab:large_scale_variability} trình bày độ lệch chuẩn của phần trăm cải thiện theo từng kịch bản đối với các nhóm có thiếu hụt phụ tải đáng kể.
+
+\begin{table}[!ht]
+    \centering
+    \caption{Độ lệch chuẩn của phần trăm cải thiện theo từng kịch bản trong các nhóm có thiếu hụt phụ tải.}
+    \label{tab:large_scale_variability}
+    \scriptsize
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{clrrrrrr}
+        \hline
+        \textbf{Nhóm} & \textbf{Kịch bản} &
+        \multicolumn{2}{c}{\textbf{KKT-LP (mốc)}} &
+        \multicolumn{2}{c}{\textbf{Bilevel-BO (đề xuất)}} &
+        \multicolumn{2}{c}{\textbf{PPO-500 (đề xuất)}} \\
+        \cline{3-8}
+        & & $\sigma(\Delta$ Điểm phạt\%) & $\sigma(\Delta$ Cắt tải\%) &
+        $\sigma(\Delta$ Điểm phạt\%) & $\sigma(\Delta$ Cắt tải\%) &
+        $\sigma(\Delta$ Điểm phạt\%) & $\sigma(\Delta$ Cắt tải\%) \\
+        \hline
+        G2 & Tăng trưởng phụ tải trung bình & \textbf{149.6} & \textbf{34.2} & \underline{707.5} & \underline{36.8} & 760.2 & \underline{36.8} \\
+        G3 & Tăng trưởng phụ tải cao & \textbf{110.3} & \textbf{15.3} & \underline{502.6} & \textbf{15.3} & 538.1 & \underline{15.8} \\
+        G6 & Nghỉ hưu máy phát & \textbf{125.2} & \textbf{18.1} & 380.4 & \underline{21.9} & \underline{340.1} & 22.3 \\
+        G7 & Đa cú sốc kết hợp & \textbf{35.4} & \textbf{5.9} & \underline{118.0} & \underline{9.9} & 125.6 & 10.6 \\
+        \hline
+    \end{tabular}}
+\end{table}
+
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{results_chap5/large_scale_eval/large_scale_penalty_comparison.png}
+        \caption{Cải thiện điểm phạt và cắt tải theo nhóm}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{results_chap5/large_scale_eval/large_scale_box_plots.png}
+        \caption{Phân phối điểm phạt theo nhóm}
+    \end{subfigure}
+    \caption{Kết quả đánh giá quy mô lớn trên 800 kịch bản ngẫu nhiên.}
+    \label{fig:large_scale_results}
+\end{figure}
+
+Kết quả quy mô lớn cho thấy một bức tranh thận trọng hơn so với chỉ nhìn vào cắt tải. Bilevel-BO và PPO-500 sau thiết kế lại đều giảm cắt tải rất mạnh trong các nhóm có thiếu hụt nghiêm trọng, đặc biệt G2, G3, G6 và G7. Tuy nhiên, khi nghiệm huấn luyện trên một kịch bản tĩnh được chuyển sang các nhóm kịch bản khác, chi phí vốn lớn có thể làm phần trăm cải thiện điểm phạt âm mạnh. Độ lệch chuẩn ở Bảng~\ref{tab:large_scale_variability} cho thấy mức phân tán giữa các kịch bản là đáng kể, nhất là với điểm phạt của các nghiệm BO/PPO trong G2, G3 và G6. Điều này không có nghĩa phương án sai về mặt độ tin cậy; nó cho thấy nghiệm tĩnh chưa phải nghiệm tối ưu bền vững cho toàn bộ phân phối kịch bản.
+
+KKT-LP là mốc so sánh mạnh về mặt giảm cắt tải: phương pháp này giảm $63.6\%$ đến $91.7\%$ cắt tải trong các nhóm căng thẳng nhưng cũng thường làm tăng điểm phạt do đầu tư khá nhiều. Bilevel-BO cải thiện rõ trong đánh giá chuyển giao, đặc biệt ở G3, G6 và G7, nhưng vẫn chịu phạt chi phí đầu tư khi áp dụng sang các nhóm không cần mở rộng thêm như G4--G5. PPO-500 không còn là chính sách gần không đầu tư; phương pháp này giảm $90.2\%$ cắt tải ở G3, $67.0\%$ ở G6 và $74.0\%$ ở G7, với cùng đánh đổi chi phí đầu tư khi chuyển sang các nhóm kịch bản khác.
+
+% ============================================================
+\section{Hướng phát triển trong tương lai}
+% ============================================================
+
+Từ các kết quả thực nghiệm trên hệ thống WECC 3 vùng, có thể rút ra một số hướng mở rộng quan trọng cho các nghiên cứu tiếp theo.
+
+Thứ nhất, cần chuyển từ tối ưu trên từng kịch bản tĩnh sang tối ưu trực tiếp trên phân phối kịch bản. Kết quả đánh giá 800 kịch bản cho thấy các nghiệm được huấn luyện trên một cấu hình riêng lẻ có thể giảm cắt tải rất tốt nhưng vẫn chịu phạt chi phí đầu tư lớn khi chuyển sang các nhóm kịch bản khác. Vì vậy, hướng tiếp theo là đưa Monte Carlo vào ngay trong quá trình huấn luyện và tối ưu, thay vì chỉ dùng như bước đánh giá hậu nghiệm. Khi đó, hàm mục tiêu có thể được mở rộng từ kỳ vọng đơn thuần sang các tiêu chí rủi ro như phương sai, xác suất cắt tải vượt ngưỡng hoặc CVaR.
+
+Thứ hai, môi trường học tăng cường nên được mở rộng từ bài toán một bước sang bài toán nhiều giai đoạn. Trong quy hoạch nguồn điện thực tế, quyết định đầu tư không diễn ra một lần duy nhất mà được chia theo các mốc thời gian nhiều năm, chịu ảnh hưởng của tăng trưởng phụ tải, biến động chi phí công nghệ và chính sách carbon. Mô hình nhiều bước sẽ cho phép tác tử học chiến lược đầu tư tuần tự: đầu tư bao nhiêu ở giai đoạn hiện tại, chờ đợi công nghệ giảm giá ra sao, và điều chỉnh danh mục khi hệ thống xuất hiện các trạng thái bất lợi mới.
+
+Thứ ba, mô hình vận hành cấp dưới có thể được làm giàu hơn. Mô hình hiện tại tập trung vào điều độ kinh tế tuyến tính theo vùng, phù hợp để đánh giá lặp lại nhanh nhưng chưa mô tả đầy đủ các ràng buộc vận hành chi tiết như dòng công suất DC/AC, ràng buộc ramping, dự phòng quay, giới hạn nạp -- xả và trạng thái năng lượng của pin lưu trữ. Việc bổ sung các ràng buộc này sẽ giúp kết quả đầu tư gần hơn với vận hành thực tế, dù chi phí tính toán sẽ tăng đáng kể.
+
+Thứ tư, cần mở rộng phạm vi dữ liệu và quy mô hệ thống. Các thí nghiệm trong chương kết quả sử dụng 12 ngày đại diện để đảm bảo khả năng tái lập và so sánh nhiều phương pháp. Trong tương lai, có thể đánh giá trên toàn bộ chuỗi thời gian năm, nhiều năm liên tiếp, hoặc các hệ thống nhiều vùng hơn như mô hình WECC/NPCC chi tiết. Điều này đặc biệt quan trọng để kiểm tra khả năng mở rộng của tối ưu hóa Bayes và học tăng cường khi số biến đầu tư tăng lên.
+
+Cuối cùng, có thể nghiên cứu các chiến lược lai giữa tối ưu hóa Bayes, học tăng cường và mốc so sánh kinh tế. Tối ưu hóa Bayes có hiệu quả mẫu tốt trong bài toán tĩnh, PPO có tiềm năng suy luận nhanh sau huấn luyện, còn KKT-LP cung cấp tín hiệu cận biên dễ diễn giải. Một hướng khả thi là dùng nghiệm KKT để khởi tạo không gian tìm kiếm, dùng tối ưu hóa Bayes để tạo dữ liệu chất lượng cao, sau đó huấn luyện chính sách học tăng cường trên tập nghiệm này để đạt được khả năng ra quyết định nhanh trong các kịch bản mới. Cách tiếp cận lai này phù hợp với mục tiêu dài hạn của đề tài: xây dựng một bộ công cụ quy hoạch nguồn điện vừa có khả năng tối ưu tốt, vừa có tính thích nghi trước bất định của hệ thống điện hiện đại.

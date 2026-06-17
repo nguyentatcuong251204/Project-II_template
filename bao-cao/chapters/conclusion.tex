@@ -1,0 +1,15 @@
+\chapter*{KẾT LUẬN}
+\addcontentsline{toc}{chapter}{KẾT LUẬN}
+\label{chap:conclusion}
+
+Các kết quả chạy lại dẫn tới ba kết luận chính.
+
+Đóng góp chính của đồ án là xây dựng và kiểm chứng một khung đánh giá lai hai cấp cho bài toán quy hoạch mở rộng nguồn điện: cấp trên dùng tối ưu hóa Bayes hoặc PPO để sinh phương án đầu tư, còn cấp dưới dùng LP để đánh giá vận hành, chi phí và cắt tải trên cùng một hệ quy chiếu. So với việc chỉ dùng một thuật toán hộp đen, cách tiếp cận này giữ lại khả năng kiểm tra ràng buộc vận hành của mô hình toán học; so với mốc KKT-LP, nó cho phép khảo sát rộng hơn các đánh đổi chi phí--độ tin cậy trong không gian đầu tư. Các thực nghiệm trên WECC 3 vùng, MC20 và 800 kịch bản cho thấy những mục tiêu đặt ra ở Chương 1 đã được trả lời ở mức mô hình xấp xỉ: thiết kế được kiến trúc hai cấp, triển khai được các thuật toán cấp trên, so sánh được với mốc tham chiếu và phân tích được khả năng chuyển giao giữa các kịch bản.
+
+Thứ nhất, tối ưu hóa Bayes theo TPE vẫn là phương pháp ổn định trong phạm vi bài toán quy hoạch tĩnh một bước của đề tài. Khi được cấp cùng ngân sách 500 lượt đánh giá với PPO, phương pháp này tìm được nghiệm tốt nhất trên hai kịch bản xác định có căng thẳng và nghiệm cạnh tranh trên bộ 20 mẫu Monte Carlo bền vững, dù thời gian chạy dài hơn cấu hình 20--100 lượt đánh giá ban đầu.
+
+Thứ hai, KKT-LP là mốc so sánh có giá trị thực tế cao. Phương pháp này không cần huấn luyện, giảm cắt tải tốt và đặc biệt hữu ích như một mốc kiểm tra kinh tế. Hạn chế chính là xu hướng đầu tư mạnh theo quy tắc cận biên, khiến điểm phạt tổng hợp có thể xấu hơn khi chi phí đầu tư được tính đầy đủ.
+
+Thứ ba, kết quả PPO-500 cho thấy học tăng cường rất nhạy với thiết kế môi trường. Thiết kế ban đầu dùng trực tiếp MW trong không gian hành động khiến chính sách sinh hành động quá nhỏ; sau khi chuẩn hóa hành động về $[0,1]$ và đổi thang nội bộ sang MW, PPO học được danh mục đầu tư có ý nghĩa và đạt chất lượng gần tối ưu hóa Bayes/KKT trong các kịch bản căng thẳng. Tuy nhiên, để học tăng cường trở thành hướng cạnh tranh ổn định hơn, cần mở rộng môi trường theo chuỗi quyết định nhiều bước, bổ sung cách thiết kế tín hiệu thưởng theo thành phần chi phí/cắt tải và huấn luyện trên phân phối kịch bản thay vì một cấu hình tĩnh.
+
+Phạm vi kết luận của đồ án gắn với các giả định đã nêu trong phần mô hình: hệ thống được gom theo vùng, vận hành được xấp xỉ bằng LP, số ngày đại diện còn hạn chế và các ràng buộc chi tiết như AC/DC power flow đầy đủ, ramping, dự phòng quay và trạng thái năng lượng của BESS chưa được mô hình hóa hoàn chỉnh. Do đó, giá trị chính của kết quả nằm ở việc chứng minh quy trình tính toán và cách so sánh phương pháp, hơn là đưa ra một khuyến nghị quy hoạch vận hành cuối cùng cho hệ thống điện thực tế.

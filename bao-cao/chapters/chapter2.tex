@@ -1,0 +1,443 @@
+\chapter{Cơ sở lý thuyết}
+
+Chương này trình bày các nền tảng lý thuyết được sử dụng trong đề tài, bao gồm: GEP, chi phí đầu tư niên kim hóa, tối ưu hóa hai cấp, LP, BO, RL dựa trên MDP, và phân tích kịch bản ngẫu nhiên. Mỗi phần lý thuyết đều được phân tích trong mối liên hệ trực tiếp với bài toán đang giải quyết.
+
+% ================================================================
+\section{Bài toán Quy hoạch mở rộng nguồn điện}
+% ================================================================
+
+\subsection{Định nghĩa bài toán}
+
+GEP là bài toán xác định thời điểm, vị trí, loại công nghệ và quy mô công suất của các nhà máy phát điện mới cần xây dựng trong một khoảng thời gian quy hoạch nhất định, sao cho tổng chi phí hệ thống (bao gồm chi phí đầu tư và chi phí vận hành) được tối thiểu hóa, đồng thời thỏa mãn các ràng buộc về kỹ thuật, kinh tế và môi trường \cite{koltsaklis2018gep}.
+
+Về mặt toán học, bài toán GEP tổng quát có thể được phát biểu như sau:
+
+\begin{equation}
+    \min_{\mathbf{x}} \quad C_{\text{inv}}(\mathbf{x}) + C_{\text{op}}(\mathbf{x})
+    \label{eq:gep_general}
+\end{equation}
+
+\noindent thỏa mãn các ràng buộc:
+\begin{itemize}
+    \item Cân bằng cung -- cầu công suất tại mọi thời điểm
+    \item Giới hạn công suất phát của từng nhà máy
+    \item Giới hạn truyền tải giữa các vùng
+    \item Ràng buộc về độ tin cậy cung cấp điện
+    \item Ràng buộc về phát thải (nếu có)
+\end{itemize}
+
+\subsection{Phân loại các phương pháp giải bài toán Quy hoạch mở rộng nguồn điện}
+
+Theo tổng quan của Sadeghi và cộng sự \cite{sadeghi2017gep_review}, các phương pháp giải GEP được chia thành ba nhóm chính:
+
+\begin{enumerate}
+    \item \textbf{Phương pháp toán học chính xác:} Bao gồm LP, MILP và DP. Với các giả thiết phù hợp, các phương pháp này có thể tìm nghiệm tối ưu của mô hình toán học được phát biểu, nhưng thường gặp khó khăn khi quy mô bài toán tăng lên do hiện tượng gia tăng nhanh số chiều trạng thái và biến quyết định (curse of dimensionality) \cite{oree2017gep_review}.
+    
+    \item \textbf{Phương pháp metaheuristic:} Bao gồm GA, PSO và SA. Các phương pháp này linh hoạt hơn nhưng không đảm bảo hội tụ về nghiệm tối ưu toàn cục.
+    
+    \item \textbf{Phương pháp dựa trên Học máy và Trí tuệ nhân tạo (AI/ML):} Bao gồm BO, RL, Mạng thần kinh nhân tạo và các phương pháp lai. Đây là hướng nghiên cứu mới và được quan tâm ngày càng nhiều nhờ khả năng xử lý các bài toán quy mô lớn với tính bất định cao.
+\end{enumerate}
+
+\iffalse
+\subsection{Liên hệ với đề tài}
+
+Trong đề tài này, GEP được giải quyết bằng cách kết hợp hai phương pháp: cấp trên sử dụng BO và RL để khám phá không gian quyết định đầu tư, trong khi cấp dưới sử dụng LP để đảm bảo tính khả thi vật lý. Cách tiếp cận lai này nhằm khắc phục nhược điểm của từng phương pháp khi được sử dụng độc lập: LP thuần túy không thể xử lý hiệu quả không gian quyết định đầu tư rộng lớn, trong khi AI thuần túy khó đảm bảo các ràng buộc vật lý nghiêm ngặt.
+\fi
+
+% ================================================================
+\section{Chi phí đầu tư niên kim hóa}
+% ================================================================
+
+\subsection{Nhân tử thu hồi vốn}
+
+Để so sánh công bằng giữa chi phí đầu tư một lần và chi phí vận hành hàng năm, chi phí đầu tư được quy đổi thành dòng tiền hàng năm đều nhau trong suốt vòng đời kinh tế của công nghệ. Công cụ toán học sử dụng là CRF \cite{brealey2020corporate}:
+
+\begin{equation}
+    \text{CRF}(r, n) = \frac{r(1+r)^n}{(1+r)^n - 1}
+    \label{eq:crf}
+\end{equation}
+
+\noindent trong đó:
+\begin{itemize}
+    \item $r$: Lãi suất chiết khấu WACC, trong đề tài $r = 7\%$
+    \item $n$: Tuổi thọ kinh tế của công nghệ (năm)
+\end{itemize}
+
+Chi phí đầu tư niên kim hóa:
+\begin{equation}
+    C_{\text{inv}}(\mathbf{x}) = \sum_{z \in \mathbf{Z}} \sum_{k \in \mathbf{K}} x_{z,k} \cdot \text{CAPEX}_k \cdot \text{CRF}(r, n_k)
+    \label{eq:annualized_capex}
+\end{equation}
+
+
+\subsection{So sánh phương pháp Niên kim hóa và Khấu hao tuyến tính}
+
+Trong phân tích tài chính dự án thông thường, phương pháp khấu hao tuyến tính được áp dụng để phân bổ đều chi phí đầu tư ban đầu theo thời gian:
+\begin{equation}
+    D_{\text{linear}} = \frac{\text{CAPEX}}{n}
+\end{equation}
+Tuy nhiên, phương pháp này bộc lộ nhược điểm lớn trong quy hoạch dài hạn nguồn điện khi bỏ qua giá trị thời gian của tiền tệ và chi phí cơ hội của vốn đầu tư.
+
+Ngược lại, phương pháp niên kim hóa sử dụng Nhân tử thu hồi vốn CRF (\ref{eq:crf}) tích hợp trực tiếp lãi suất chiết khấu $r$ (trong đề tài này là chi phí sử dụng vốn trung bình trọng số WACC). Tỷ số giữa chi phí niên kim hóa và khấu hao tuyến tính được thể hiện qua công thức:
+\begin{equation}
+    \frac{\text{CAPEX} \cdot \text{CRF}(r, n)}{\text{CAPEX} / n} = n \cdot \text{CRF}(r, n) = \frac{r \cdot n \cdot (1+r)^n}{(1+r)^n - 1}
+    \label{eq:crf_vs_linear}
+\end{equation}
+Với lãi suất chiết khấu dương ($r > 0$), tỷ số này luôn lớn hơn 1. Điều này phản ánh chi phí tài chính của việc duy trì nguồn vốn trong suốt vòng đời kinh tế của công nghệ. Việc áp dụng CRF giúp tránh đánh giá thấp chi phí thường niên của các công nghệ có vốn đầu tư ban đầu lớn nhưng chi phí vận hành nhỏ (chẳng hạn như điện mặt trời, điện gió), qua đó tạo cơ sở nhất quán hơn khi so sánh hiệu quả kinh tế giữa các loại nguồn điện khác nhau.
+
+\iffalse
+\subsection{Liên hệ với đề tài}
+
+CRF cho phép quy đổi CAPEX (chi phí đầu tư ban đầu) thành dòng chi phí hàng năm, từ đó có thể cộng trực tiếp với chi phí vận hành hàng năm để tạo thành hàm mục tiêu thống nhất. Điều này đặc biệt quan trọng khi so sánh các công nghệ có tuổi thọ khác nhau (ví dụ: Solar 30 năm vs. Battery 15 năm). Trong đề tài, các thông số CAPEX được tham chiếu từ NREL ATB 2024 \cite{nrel2024atb}.
+\fi
+
+% ================================================================
+\section{Tối ưu hóa hai cấp}
+% ================================================================
+
+\subsection{Khái niệm và phát biểu toán học}
+
+Tối ưu hóa hai cấp là một lớp bài toán tối ưu hóa toán học trong đó một bài toán tối ưu (cấp trên) chứa một bài toán tối ưu khác (cấp dưới) như một ràng buộc \cite{colson2007bilevel}. Dạng tổng quát của bài toán bi-level được phát biểu như sau:
+
+\begin{align}
+    &\min_{\mathbf{x}, \mathbf{y}} \quad F(\mathbf{x}, \mathbf{y}) \quad &\text{(Hàm mục tiêu cấp trên)} \label{eq:bilevel_upper}\\
+    &\text{s.t.} \quad G(\mathbf{x}, \mathbf{y}) \leq 0 \quad &\text{(Ràng buộc cấp trên)} \notag \\
+    &\quad\quad\;\; \mathbf{y} \in \arg\min_{\mathbf{y}'} \left\{ f(\mathbf{x}, \mathbf{y}') \;:\; g(\mathbf{x}, \mathbf{y}') \leq 0 \right\} \quad &\text{(Bài toán cấp dưới)} \label{eq:bilevel_lower}
+\end{align}
+
+\noindent trong đó $\mathbf{x}$ là biến quyết định của cấp trên, $\mathbf{y}$ là biến quyết định của cấp dưới phụ thuộc vào lựa chọn $\mathbf{x}$ của cấp trên.
+
+\subsection{Đặc điểm của bài toán bi-level}
+
+Bài toán bi-level có một số đặc điểm quan trọng \cite{sinha2018bilevel_review}:
+
+\begin{itemize}
+    \item \textbf{Cấu trúc phân cấp:} Hai bài toán tối ưu có mối quan hệ chủ -- phụ. Cấp trên đưa ra quyết định trước, cấp dưới phản hồi tối ưu dựa trên quyết định của cấp trên.
+    
+    \item \textbf{Tính NP-hard:} Ngay cả khi cả hai cấp đều là bài toán tuyến tính, bài toán bi-level tổng quát vẫn thuộc lớp NP-hard \cite{hansen1992bilevel_nphard}.
+    
+    \item \textbf{Phản hồi ngầm:} Nghiệm tối ưu $\mathbf{y}^*(\mathbf{x})$ của cấp dưới là một hàm ngầm của $\mathbf{x}$, khiến hàm mục tiêu cấp trên thường không khả vi hoặc phi lồi.
+\end{itemize}
+
+\iffalse
+\subsection{Liên hệ với đề tài}
+
+Trong đề tài này, cấu trúc bi-level được hiện thực hóa như sau:
+
+\begin{itemize}
+    \item \textbf{Cấp trên (Leader):} Quyết định véctơ đầu tư $\mathbf{x} = [x_{z,k}]$ -- tức công suất MW thêm mới cho mỗi công nghệ $k$ tại mỗi vùng $z$. Hàm mục tiêu cấp trên là tối thiểu hóa tổng chi phí (đầu tư + vận hành + phạt cắt tải).
+    
+    \item \textbf{Cấp dưới (Follower):} Với mỗi quyết định đầu tư $\mathbf{x}$ từ cấp trên, cấp dưới giải bài toán điều độ kinh tế (Economic Dispatch) bằng LP để xác định phương thức vận hành tối ưu, bao gồm phân bổ công suất phát, truyền tải liên vùng, và cắt tải (nếu cần thiết).
+\end{itemize}
+
+Mối quan hệ phản hồi giữa hai cấp tạo thành vòng lặp: cấp trên đề xuất $\mathbf{x}$, cấp dưới trả về chi phí vận hành $C_{\text{op}}(\mathbf{x})$ và lượng cắt tải $S_{\text{total}}(\mathbf{x})$, cấp trên sử dụng thông tin này để cải thiện quyết định đầu tư ở lần lặp tiếp theo.
+\fi
+
+% ================================================================
+\section{Quy hoạch tuyến tính}
+% ================================================================
+
+\subsection{Lý thuyết cơ bản}
+
+LP là phương pháp tối ưu hóa một hàm mục tiêu tuyến tính trên một miền chấp nhận được xác định bởi các ràng buộc tuyến tính \cite{bertsimas1997lp}. Dạng chuẩn của bài toán LP:
+
+\begin{align}
+    \min_{\mathbf{y}} \quad & \mathbf{c}^\top \mathbf{y} \label{eq:lp_obj}\\
+    \text{s.t.} \quad & A\mathbf{y} = \mathbf{b} \notag\\
+    & \mathbf{y} \geq \mathbf{0} \notag
+\end{align}
+
+\noindent trong đó $\mathbf{c} \in \mathbb{R}^n$ là véctơ chi phí, $A \in \mathbb{R}^{m \times n}$ là ma trận ràng buộc, $\mathbf{b} \in \mathbb{R}^m$ là véctơ vế phải.
+
+\subsection{Thuật toán giải quy hoạch tuyến tính}
+
+Hai thuật toán chính để giải LP là:
+
+\begin{enumerate}
+    \item \textbf{Phương pháp đơn hình:} Do Dantzig đề xuất năm 1947 \cite{dantzig1951simplex}, phương pháp này duyệt qua các đỉnh của đa diện chấp nhận được. Mặc dù có độ phức tạp trường hợp xấu nhất là hàm mũ, trên thực tế Simplex thường hoạt động rất hiệu quả.
+    
+    \item \textbf{Phương pháp điểm trong:} Do Karmarkar đề xuất năm 1984 \cite{karmarkar1984interior}, phương pháp này di chuyển qua phần bên trong của miền chấp nhận được. Có độ phức tạp đa thức $O(n^{3.5}L)$ với $L$ là kích thước đầu vào.
+\end{enumerate}
+
+
+% ================================================================
+\section{Tối ưu hóa Bayes}
+% ================================================================
+
+\subsection{Khái niệm và động lực}
+
+BO là phương pháp tối ưu hóa toàn cục dành cho các hàm mục tiêu dạng \textit{hộp đen} có chi phí đánh giá đắt đỏ \cite{shahriari2016bo_survey}. Khác với các phương pháp dựa trên gradient, BO không yêu cầu biết dạng giải tích hay đạo hàm của hàm mục tiêu, mà thay vào đó xây dựng một mô hình xác suất xấp xỉ dựa trên các quan sát đã thu thập.
+
+Bài toán BO được phát biểu:
+\begin{equation}
+    \mathbf{x}^* = \arg\min_{\mathbf{x} \in \mathbf{X}} f(\mathbf{x})
+    \label{eq:bo_problem}
+\end{equation}
+\noindent trong đó $f$ là hàm mục tiêu đắt đỏ, $\mathbf{X}$ là miền tìm kiếm, và ta không có quyền truy cập vào gradient $\nabla f$.
+
+\subsection{Các thành phần cốt lõi}
+
+BO gồm hai thành phần chính \cite{frazier2018bo_tutorial}:
+
+\subsubsection{Mô hình thay thế}
+
+Mô hình thay thế là một mô hình xác suất xấp xỉ hàm mục tiêu $f(\mathbf{x})$ dựa trên tập dữ liệu đã quan sát $\mathbf{D}_n = \{(\mathbf{x}_i, y_i)\}_{i=1}^n$. Hai lựa chọn phổ biến nhất:
+
+\begin{itemize}
+    \item \textbf{GP:} Mô hình GP định nghĩa một phân phối trên không gian hàm, nơi mỗi tập con hữu hạn tuân theo phân phối chuẩn đa biến \cite{rasmussen2006gp}:
+    \begin{equation}
+        f(\mathbf{x}) \sim \mathrm{GP}\left(m(\mathbf{x}),\; k(\mathbf{x}, \mathbf{x}')\right)
+    \end{equation}
+    với $m(\mathbf{x})$ là hàm trung bình và $k(\mathbf{x}, \mathbf{x}')$ là hàm hiệp phương sai kernel.
+    
+    \item \textbf{TPE:} Do Bergstra và cộng sự đề xuất \cite{bergstra2011tpe}, TPE mô hình hóa hai mật độ xác suất có điều kiện:
+    \begin{equation}
+        p(\mathbf{x} \mid y) = \begin{cases}
+            l(\mathbf{x}) & \text{nếu } y < y^* \\
+            g(\mathbf{x}) & \text{nếu } y \geq y^*
+        \end{cases}
+        \label{eq:tpe}
+    \end{equation}
+    trong đó $y^*$ là ngưỡng phân chia, $l(\mathbf{x})$ là mật độ của nhóm điểm có giá trị mục tiêu thấp hơn ngưỡng, còn $g(\mathbf{x})$ là mật độ của nhóm điểm còn lại. Tỷ số $l(\mathbf{x})/g(\mathbf{x})$ cao tương ứng với vùng có triển vọng tốt.
+\end{itemize}
+
+\subsubsection{Hàm thu thập}
+
+Hàm thu thập $\alpha(\mathbf{x})$ quyết định điểm nào sẽ được đánh giá tiếp theo, bằng cách cân bằng giữa \textit{khai thác} -- thử nghiệm tại vùng đã biết tốt, và \textit{khám phá} -- thử nghiệm tại vùng chưa biết nhiều.
+
+\textbf{EI} là hàm thu thập phổ biến nhất \cite{jones1998ei}:
+\begin{equation}
+    \text{EI}(\mathbf{x}) = \mathbb{E}\left[\max\left(f_{\min} - f(\mathbf{x}),\; 0\right)\right]
+    \label{eq:ei}
+\end{equation}
+\noindent trong đó $f_{\min}$ là giá trị tốt nhất đã quan sát được. Điểm tiếp theo được chọn bằng:
+\begin{equation}
+    \mathbf{x}_{n+1} = \arg\max_{\mathbf{x} \in \mathbf{X}} \text{EI}(\mathbf{x})
+\end{equation}
+
+\subsection{Quy trình tối ưu hóa Bayes}
+
+Thuật toán BO hoạt động theo các bước vòng lặp tuần tự cơ bản sau:
+
+\begin{enumerate}
+    \item Khởi tạo: Đánh giá hàm $f$ tại $n_0$ điểm ngẫu nhiên trong $\mathbf{X}$
+    \item Lặp cho đến khi hết ngân sách:
+    \begin{enumerate}
+        \item Cập nhật mô hình thay thế dựa trên $\mathbf{D}_n$
+        \item Tối ưu hàm thu thập $\alpha(\mathbf{x})$ để tìm $\mathbf{x}_{n+1}$
+        \item Đánh giá $y_{n+1} = f(\mathbf{x}_{n+1})$
+        \item Cập nhật $\mathbf{D}_{n+1} = \mathbf{D}_n \cup \{(\mathbf{x}_{n+1}, y_{n+1})\}$
+    \end{enumerate}
+    \item Trả về $\mathbf{x}^* = \arg\min_{(\mathbf{x}_i, y_i) \in \mathbf{D}} y_i$
+\end{enumerate}
+
+\iffalse
+\subsection{Liên hệ với đề tài}
+
+Trong đề tài, BO được sử dụng ở cấp trên để tìm véctơ đầu tư $\mathbf{x}$ có điểm phạt thấp. Hàm mục tiêu dạng hộp đen chính là điểm phạt $J(\mathbf{x})$ từ cấp dưới -- mỗi lần đánh giá yêu cầu giải bài toán LP cho nhiều giờ mô phỏng hoặc nhiều kịch bản đại diện. Cụ thể:
+
+\begin{itemize}
+    \item \textbf{Mô hình thay thế:} Sử dụng TPE (phương trình \ref{eq:tpe}), phù hợp hơn GP cho không gian tham số hỗn hợp (liên tục + rời rạc) và số chiều trung bình.
+    
+    \item \textbf{Không gian tìm kiếm:} $\mathbf{X} = \prod_{z \in \mathbf{Z}} \prod_{k \in \mathbf{K}} [0, \overline{X}_k]$ với bước rời rạc hóa 10 MW để giảm kích thước hiệu dụng.
+    
+    \item \textbf{Hiệu quả mẫu:} BO thường đạt nghiệm tốt với ít lượt đánh giá hơn so với nhiều cách học tăng cường, đặc biệt trong bài toán quy hoạch tĩnh một bước có chi phí đánh giá cao.
+\end{itemize}
+\fi
+
+% ================================================================
+\section{Học tăng cường}
+% ================================================================
+
+\subsection{Cơ sở toán học: Quá trình quyết định Markov}
+
+MDP là khung toán học mô tả bài toán ra quyết định tuần tự trong môi trường có tính ngẫu nhiên \cite{puterman1994mdp}. Một MDP được xác định bởi bộ năm $(\mathbf{S}, \mathbf{A}, P, R, \gamma)$:
+
+\begin{itemize}
+    \item $\mathbf{S}$: Không gian trạng thái
+    \item $\mathbf{A}$: Không gian hành động
+    \item $P(s' \mid s, a)$: Hàm chuyển trạng thái
+    \item $R(s, a)$: Hàm phần thưởng
+    \item $\gamma \in [0, 1]$: Hệ số chiết khấu
+\end{itemize}
+
+\noindent \textbf{Tính chất Markov} cho rằng trạng thái tương lai chỉ phụ thuộc vào trạng thái hiện tại, không phụ thuộc vào lịch sử:
+\begin{equation}
+    P(s_{t+1} \mid s_t, a_t, s_{t-1}, a_{t-1}, \ldots) = P(s_{t+1} \mid s_t, a_t)
+\end{equation}
+
+\subsubsection{Chính sách và hàm giá trị}
+
+\textbf{Chính sách} $\pi: \mathbf{S} \to \mathbf{P}(\mathbf{A})$ ánh xạ mỗi trạng thái sang một phân phối xác suất trên không gian hành động. Mục tiêu là tìm chính sách $\pi^*$ cực đại hóa tổng phần thưởng kỳ vọng:
+
+\begin{equation}
+    \pi^* = \arg\max_{\pi} \; \mathbb{E}_{\pi}\left[\sum_{t=0}^{\infty} \gamma^t R(s_t, a_t)\right]
+    \label{eq:optimal_policy}
+\end{equation}
+
+\textbf{Hàm giá trị trạng thái:}
+\begin{equation}
+    V^{\pi}(s) = \mathbb{E}_{\pi}\left[\sum_{t=0}^{\infty} \gamma^t R(s_t, a_t) \;\middle|\; s_0 = s\right]
+    \label{eq:value_function}
+\end{equation}
+
+\textbf{Hàm giá trị hành động:}
+\begin{equation}
+    Q^{\pi}(s, a) = \mathbb{E}_{\pi}\left[\sum_{t=0}^{\infty} \gamma^t R(s_t, a_t) \;\middle|\; s_0 = s, a_0 = a\right]
+    \label{eq:q_function}
+\end{equation}
+
+\textbf{Phương trình Bellman:} Mối quan hệ đệ quy giữa giá trị của các trạng thái kế tiếp:
+\begin{equation}
+    V^{\pi}(s) = \sum_{a} \pi(a|s) \left[ R(s,a) + \gamma \sum_{s'} P(s'|s,a) V^{\pi}(s') \right]
+    \label{eq:bellman}
+\end{equation}
+
+\iffalse
+\subsubsection{Liên hệ với đề tài}
+
+Bài toán GEP được ánh xạ thành MDP đơn bước như sau:
+
+\begin{itemize}
+    \item \textbf{Trạng thái $\mathbf{s}$:} Véctơ đặc trưng hệ thống (công suất hiện hữu, phụ tải đỉnh/trung bình, biên dự phòng) đã chuẩn hóa về $[-1, 1]$.
+    \item \textbf{Hành động $\mathbf{a}$:} Véctơ đầu tư $\mathbf{x} = [x_{z,k}]$ -- công suất MW thêm mới.
+    \item \textbf{Phần thưởng $r$:} $r = -J(\mathbf{x})/10^6$ -- âm của điểm phạt đã chuẩn hóa từ cấp dưới.
+\end{itemize}
+
+Việc xây dựng khung MDP cho phép áp dụng trực tiếp các thuật toán RL hiện đại như PPO mà không cần thiết kế heuristic riêng, đồng thời mở đường cho mở rộng sang quy hoạch đa giai đoạn trong tương lai.
+\fi
+
+\subsection{Tổng quan về Học tăng cường}
+
+RL là nhánh của machine learning trong đó một tác tử học cách hành động thông qua tương tác trực tiếp với môi trường, nhận tín hiệu phần thưởng để cải thiện chính sách theo thời gian \cite{sutton2018rl}. Khác với học có giám sát, RL không yêu cầu dữ liệu huấn luyện với nhãn cho trước, mà tác tử tự khám phá và khai thác.
+
+\subsection{Phương pháp Policy Gradient}
+
+Trong các bài toán với không gian hành động liên tục (như bài toán GEP), các phương pháp Policy Gradient được ưu tiên sử dụng \cite{schulman2015trpo}. Ý tưởng cốt lõi là tham số hóa chính sách $\pi_\theta(a|s)$ bằng mạng thần kinh với tham số $\theta$, và cập nhật $\theta$ theo hướng gradient của hàm mục tiêu:
+
+\begin{equation}
+    \nabla_\theta J(\theta) = \mathbb{E}_{\pi_\theta}\left[\nabla_\theta \log \pi_\theta(a_t | s_t) \cdot A^{\pi_\theta}(s_t, a_t)\right]
+    \label{eq:policy_gradient}
+\end{equation}
+
+\noindent trong đó $A^{\pi}(s, a) = Q^{\pi}(s, a) - V^{\pi}(s)$ là hàm lợi thế, đo lường mức chênh lệch giữa giá trị của hành động $a$ và giá trị trung bình theo chính sách tại trạng thái $s$.
+
+\subsection{Tối ưu hóa chính sách cận biên}
+
+PPO do Schulman và cộng sự đề xuất năm 2017 \cite{schulman2017ppo} là một thuật toán policy gradient với cơ chế giới hạn bước cập nhật chính sách, giúp cải thiện độ ổn định huấn luyện so với các cập nhật policy gradient không bị ràng buộc.
+
+\subsubsection{Hàm mục tiêu có kẹp}
+
+PPO sử dụng hàm mục tiêu có kẹp:
+
+\begin{equation}
+    L^{\text{CLIP}}(\theta) = \hat{\mathbb{E}}_t \left[ \min\left( r_t(\theta) \hat{A}_t,\; \text{clip}\left(r_t(\theta), 1-\epsilon, 1+\epsilon\right) \hat{A}_t \right) \right]
+    \label{eq:ppo_clip}
+\end{equation}
+
+\noindent trong đó:
+\begin{itemize}
+    \item $r_t(\theta) = \frac{\pi_\theta(a_t | s_t)}{\pi_{\theta_{\text{old}}}(a_t | s_t)}$ là tỷ số xác suất
+    \item $\hat{A}_t$ là ước lượng hàm lợi thế (thường dùng GAE \cite{schulman2015gae})
+    \item $\epsilon$ là siêu tham số kẹp (thường $\epsilon = 0.2$)
+\end{itemize}
+
+Phép kẹp ngăn chặn các bước cập nhật quá lớn: khi $r_t(\theta)$ ra ngoài khoảng $[1-\epsilon, 1+\epsilon]$, gradient bị triệt tiêu, bảo vệ quá trình huấn luyện khỏi sự bất ổn.
+
+\subsubsection{Ưu điểm của tối ưu hóa chính sách cận biên}
+\begin{itemize}
+    \item Đơn giản trong triển khai so với TRPO
+    \item Ổn định và ít nhạy cảm với siêu tham số
+    \item Hiệu quả trên nhiều loại bài toán khác nhau
+    \item Thuộc loại \textit{on-policy}: sử dụng dữ liệu mới nhất từ chính sách hiện tại
+\end{itemize}
+
+% ================================================================
+\section{Phân tích kịch bản ngẫu nhiên}
+% ================================================================
+
+\subsection{Mô phỏng Monte Carlo}
+
+Mô phỏng Monte Carlo là phương pháp sử dụng lấy mẫu ngẫu nhiên lặp lại để ước lượng các đại lượng thống kê của một hệ thống phức tạp \cite{rubinstein2016monte_carlo}. Thay vì giả định rằng các tham số đầu vào luôn cố định, phương pháp này mô hình hóa chúng như những biến ngẫu nhiên và đánh giá hiệu năng hệ thống trên nhiều lần lấy mẫu khác nhau. Trong bối cảnh GEP, cách tiếp cận này đặc biệt phù hợp vì bài toán quy hoạch luôn chịu tác động của các yếu tố bất định khó dự báo chính xác trong dài hạn \cite{koltsaklis2018gep,oree2017gep_review}.
+
+Các nguồn bất định quan trọng trong GEP có thể kể đến như sau:
+\begin{itemize}
+    \item \textbf{Phụ tải điện:} Nhu cầu tiêu thụ thay đổi theo mùa, theo giờ, và chịu ảnh hưởng mạnh của thời tiết, tăng trưởng kinh tế hoặc hành vi người dùng.
+    \item \textbf{Nguồn tái tạo:} Điện gió và điện mặt trời phụ thuộc trực tiếp vào điều kiện khí tượng, nên công suất khả dụng có thể dao động lớn ngay cả khi công suất lắp đặt không đổi.
+    \item \textbf{Chi phí và thông số công nghệ:} Giá nhiên liệu, hiệu suất vận hành, hệ số công suất, tuổi thọ kinh tế và chi phí bảo trì đều có thể biến thiên theo thời gian.
+    \item \textbf{Điều kiện vận hành hệ thống:} Nghịch cảnh truyền tải, sự cố tổ máy hoặc các tình huống thời tiết cực đoan có thể làm suy giảm đáng kể khả năng cung ứng điện.
+\end{itemize}
+
+Nếu chỉ tối ưu trên một quỹ đạo dữ liệu duy nhất, phương án đầu tư nhận được có thể đạt chi phí thấp trên bộ dữ liệu đó nhưng lại rất mong manh khi hệ thống phải đối mặt với các trạng thái bất lợi ngoài mẫu. Vì vậy, Monte Carlo được sử dụng để thay thế cách nhìn một-kịch-bản bằng cách đánh giá một phương án đầu tư trên cả một phân phối các trạng thái tương lai có thể xảy ra.
+
+Gọi $\xi$ là véctơ ngẫu nhiên đại diện cho toàn bộ yếu tố bất định của hệ thống, chẳng hạn hồ sơ phụ tải, khả dụng của nguồn tái tạo hoặc các cú sốc ngắn hạn trong vận hành. Khi đó, hàm phạt tổng quát của bài toán không còn là $J(\mathbf{x})$ theo nghĩa xác định, mà trở thành một hàm phụ thuộc vào trạng thái ngẫu nhiên:
+
+\begin{equation}
+    J(\mathbf{x}, \xi)
+\end{equation}
+
+Mục tiêu của quy hoạch lúc này không còn là tìm nghiệm tốt nhất cho một trạng thái duy nhất, mà là tìm phương án đầu tư có hiệu năng tốt theo một tiêu chí thống kê trên toàn bộ phân phối của $\xi$.
+
+Giá trị kỳ vọng của hàm mục tiêu trên $N$ kịch bản ngẫu nhiên:
+
+\begin{equation}
+    \bar{J}(\mathbf{x}) = \frac{1}{N} \sum_{i=1}^{N} J_i(\mathbf{x})
+    \label{eq:monte_carlo}
+\end{equation}
+
+\noindent trong đó $J_i(\mathbf{x})$ là điểm phạt ứng với kịch bản $i$ của biên dạng phụ tải và năng lượng tái tạo.
+
+Về mặt xác suất, biểu thức trên chính là xấp xỉ mẫu của kỳ vọng toán học:
+
+\begin{equation}
+    \mathbb{E}_{\xi}[J(\mathbf{x}, \xi)] \approx \frac{1}{N} \sum_{i=1}^{N} J(\mathbf{x}, \xi_i)
+    \label{eq:mc_expectation}
+\end{equation}
+
+Trong đó, mỗi $\xi_i$ là một mẫu độc lập hoặc bán độc lập được sinh ra từ cơ chế mô phỏng kịch bản. Khi $N$ tăng lên, trung bình mẫu sẽ hội tụ dần về kỳ vọng thực của hàm mục tiêu theo định luật số lớn \cite{rubinstein2016monte_carlo}. Điều này cho phép biến một bài toán tối ưu dưới bất định thành một bài toán tối ưu trên giá trị trung bình của nhiều lần mô phỏng.
+
+Từ góc nhìn tối ưu hóa, đây là dạng \textit{sample-average approximation}: cấp trên chọn một phương án đầu tư $\mathbf{x}$, cấp dưới đánh giá phương án đó trên nhiều kịch bản ngẫu nhiên, rồi lấy trung bình chi phí để phản hồi lại cho bộ tối ưu. Với cách tổ chức này, Monte Carlo đóng vai trò cầu nối giữa thế giới thực nhiều bất định và mô hình tối ưu hóa cần một hàm đánh giá đủ ổn định để có thể so sánh giữa các phương án đầu tư khác nhau.
+
+Ý nghĩa của phân tích kịch bản ngẫu nhiên không chỉ nằm ở việc làm tăng độ chân thực của bài toán, mà còn ở khả năng bộc lộ rõ các đánh đổi kinh tế -- kỹ thuật. Một phương án đầu tư rất rẻ có thể cho giá trị tốt trong kịch bản cơ sở, nhưng lại gây cắt tải lớn trong các trạng thái hiếm song nghiêm trọng. Ngược lại, một phương án có dự phòng cao hơn có thể làm tăng CAPEX ban đầu nhưng giúp ổn định chi phí vận hành, giảm thiểu rủi ro thiếu điện, và tăng độ bền vững của hệ thống trước các tổ hợp bất lợi của phụ tải và năng lượng tái tạo.
+
+Vì vậy, trong GEP hiện đại, Monte Carlo không đơn thuần là công cụ mô phỏng mà còn là cơ chế định lượng \textit{khả năng chống chịu} của một kế hoạch đầu tư. Nói cách khác, thay vì chỉ tối thiểu hóa chi phí trong điều kiện danh định, phân tích kịch bản ngẫu nhiên đánh giá khả năng duy trì vận hành chấp nhận được khi phụ tải và sản lượng tái tạo lệch khỏi giá trị kỳ vọng.
+
+\subsection{Liên hệ với đề tài}
+
+Trong đề tài này, phân tích kịch bản ngẫu nhiên được sử dụng như nền tảng lý thuyết cho kịch bản bền vững ở các chương sau. Cụ thể, với mỗi véctơ đầu tư $\mathbf{x}$ do cấp trên đề xuất, hệ thống không đánh giá ngay trên một bộ dữ liệu phụ tải -- tái tạo cố định, mà sinh ra nhiều kịch bản Monte Carlo khác nhau để tính:
+
+\begin{equation}
+    \bar{J}(\mathbf{x}) = \alpha C_{\text{inv}}(\mathbf{x}) + \frac{1}{N} \sum_{i=1}^{N} \left[ \alpha C_{\text{gen}}^*(\mathbf{x}, \xi_i) + \beta S_{\text{total}}(\mathbf{x}, \xi_i) \right]
+\end{equation}
+
+Trong đó, phần bất định chủ yếu đến từ nhiễu phụ tải và sự suy giảm công suất khả dụng của điện gió, điện mặt trời. Nhờ đó, cấp trên không còn tối ưu cho một quỹ đạo dữ liệu danh định duy nhất mà buộc phải tìm nghiệm có hiệu quả trung bình tốt trên nhiều trạng thái vận hành khác nhau.
+
+Điều này giải thích trực tiếp cho các kết quả thực nghiệm ở chương kết quả: nghiệm bền vững của đề tài có thể không phải là nghiệm rẻ nhất trên tập ngày đại diện ban đầu, nhưng thường có xu hướng dịch chuyển về những công nghệ điều độ được hơn hoặc có khả năng bù đắp biến thiên tốt hơn, chẳng hạn Gas-CCS và hệ thống lưu trữ. Nói cách khác, Monte Carlo giúp tiêu chí tối ưu phản ánh gần hơn nhu cầu thực của quy hoạch điện: không chỉ tối ưu về mặt chi phí trung bình, mà còn phải đủ bền vững trước các nhiễu động trong tương lai.
+
+% ================================================================
+\section{Tổng kết chương}
+% ================================================================
+
+Chương này đã trình bày các nền tảng lý thuyết cốt lõi được sử dụng trong đề tài. Bảng~\ref{tab:theory_summary} tóm tắt vai trò của từng lý thuyết trong hệ thống bi-level.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{4.5cm}p{3cm}p{6cm}}
+\toprule
+\textbf{Lý thuyết} & \textbf{Vị trí} & \textbf{Vai trò trong đề tài} \\
+\midrule
+GEP & Toàn bộ hệ thống & Bài toán chính cần giải quyết \\
+CRF / Niên kim hóa & Hàm mục tiêu & Quy đổi CAPEX thành chi phí hàng năm \\
+Tối ưu hóa hai cấp & Kiến trúc tổng thể & Phân tách quyết định đầu tư và vận hành \\
+LP & Cấp dưới & Giải bài toán điều độ kinh tế \\
+BO & Cấp trên & Tìm phương án đầu tư tối ưu hộp đen \\
+MDP & Cấp trên & Khung bài toán cho RL \\
+PPO & Cấp trên & Thuật toán RL on-policy ổn định \\
+Monte Carlo & Đánh giá & Phân tích tính bền vững dưới bất định \\
+\bottomrule
+\end{tabular}
+\caption{Tóm tắt vai trò của các lý thuyết trong hệ thống bi-level.}
+\label{tab:theory_summary}
+\end{table}
+
+Các chương tiếp theo sẽ trình bày chi tiết cách các lý thuyết này được kết hợp và hiện thực hóa trong kiến trúc tối ưu hóa lai hai cấp đề xuất.

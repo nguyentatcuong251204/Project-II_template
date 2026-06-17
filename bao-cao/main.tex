@@ -1,0 +1,482 @@
+% !TEX program = xelatex
+% !TEX encoding = UTF-8
+% ============================================================
+%   BÁO CÁO ĐỒ ÁN TỐT NGHIỆP - HUST - KHOA TOÁN-TIN
+%   Template LaTeX theo mẫu phụ lục hướng dẫn sinh viên
+%   Compile: xelatex -> biber -> xelatex -> xelatex
+% ============================================================
+\documentclass[12pt, a4paper]{report}
+
+% ---- Font & Encoding (tương thích XeLaTeX và pdfLaTeX) --------
+\usepackage{iftex}
+\ifXeTeX
+  % --- XeLaTeX: dùng fontspec + babel ---------------------
+  \usepackage{fontspec}
+  \setmainfont{Times New Roman}
+  \setsansfont{Arial}
+  \setmonofont{Courier New}
+  \usepackage[english,vietnamese]{babel}
+\else
+  % --- pdfLaTeX: dùng T5 encoding + inputenc + babel ------
+  \usepackage[T5]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage[english,vietnamese]{babel}
+  % Font gần giống Times New Roman cho pdflatex
+  \usepackage{mathptmx}           % serif (Times-like)
+  \usepackage[scaled=0.90]{helvet}% sans  (Helvetica-like)
+  \usepackage{courier}            % mono
+\fi
+
+% ---- Page Layout --------------------------------------------
+% Word doc: top/right/bottom = 2cm, left = 2.5cm
+%           header = 1.27cm, footer = 0.68cm
+\usepackage[
+  top=2cm,
+  bottom=2cm,
+  left=2.5cm,
+  right=2cm,
+  headheight=28pt,
+  headsep=6pt,
+  footskip=1.0cm
+]{geometry}
+
+% ---- Typography & Spacing -----------------------------------
+\usepackage{setspace}
+\usepackage{microtype}
+
+\setlength{\parindent}{1.27cm}   % Thụt đầu dòng
+\setlength{\parskip}{6pt}        % Khoảng cách đoạn
+
+% Giãn dòng 1.5 (theo chuẩn báo cáo HUST)
+\setstretch{1.5}
+
+% ---- Header / Footer ----------------------------------------
+\usepackage{fancyhdr}
+
+% Không có header, chỉ số trang căn giữa ở footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Style cho trang đầu chapter (giống nhau)
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+}
+
+% ---- Tables -------------------------------------------------
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{array}
+
+% ---- Figures ------------------------------------------------
+\usepackage{graphicx}
+\graphicspath{{images/}{results_chap5/}{results_chap5/large_scale_eval/}}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\captionsetup{
+  font=small,
+  labelfont=bf,
+  skip=4pt,
+  justification=centering
+}
+
+% ---- Colors -------------------------------------------------
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes,patterns,calc,positioning,arrows.meta}
+
+% ---- Hyperlinks ---------------------------------------------
+\usepackage[
+  hidelinks,
+  unicode=true,
+  pdftitle={Mô hình Meta-learning tối ưu vận hành hệ thống điện},
+  pdfauthor={Nguyễn Tất Cường}
+]{hyperref}
+
+% ---- TOC formatting -----------------------------------------
+\usepackage[titles]{tocloft}
+\renewcommand{\cftchapfont}{\bfseries}
+\renewcommand{\cftchappagefont}{\bfseries}
+\setlength{\cftbeforechapskip}{6pt}
+\setlength{\cftbeforesecskip}{2pt}
+\renewcommand{\contentsname}{MỤC LỤC}
+\renewcommand{\listfigurename}{DANH MỤC HÌNH VẼ}
+\renewcommand{\listtablename}{DANH MỤC BẢNG BIỂU}
+
+% ---- Chapter / Section heading style -------------------------
+\usepackage{titlesec}
+
+% Chapter: căn giữa, đậm, 14pt, in hoa
+\titleformat{\chapter}[block]
+  {\centering\bfseries\fontsize{14}{17}\selectfont}
+  {CHƯƠNG \thechapter.\ }
+  {0pt}
+  {\MakeUppercase}
+\titlespacing*{\chapter}{0pt}{12pt}{12pt}
+
+% Section: căn trái, đậm, 13pt
+\titleformat{\section}
+  {\bfseries\fontsize{13}{16}\selectfont}
+  {\thesection\ }
+  {0pt}
+  {}
+\titlespacing*{\section}{0pt}{10pt}{6pt}
+
+% Subsection: căn trái, đậm, 12pt
+\titleformat{\subsection}
+  {\bfseries\fontsize{12}{15}\selectfont}
+  {\thesubsection\ }
+  {0pt}
+  {}
+\titlespacing*{\subsection}{0pt}{8pt}{4pt}
+
+% subsubsection: nghiêng, 12pt
+\titleformat{\subsubsection}
+  {\itshape\fontsize{12}{15}\selectfont}
+  {\thesubsubsection\ }
+  {0pt}
+  {}
+\titlespacing*{\subsubsection}{0pt}{6pt}{2pt}
+
+% ---- Bibliography -------------------------------------------
+\usepackage[
+  backend=biber,
+  style=ieee,
+  sorting=none,
+  language=english
+]{biblatex}
+\usepackage{csquotes}           % required by biblatex with babel
+\DeclareLanguageMapping{vietnamese}{english}
+\DeclareFieldFormat[article,inproceedings,incollection,misc,online]{title}{\textquotedblleft#1\textquotedblright}
+\addbibresource{Bibliography.bib}
+
+% ---- Listings (code) ----------------------------------------
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{green!50!black},
+  stringstyle=\color{red!60!black},
+  tabsize=4,
+  showstringspaces=false,
+}
+
+% ---- Math ---------------------------------------------------
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+
+% ---- Utility ------------------------------------------------
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.5cm, itemsep=2pt, topsep=4pt}
+\setlist[enumerate]{leftmargin=1.5cm, itemsep=2pt, topsep=4pt}
+
+% ---- Inline code (breakable monospace) ----------------------
+% seqsplit cho phép LaTeX ngắt dòng tại bất kỳ vị trí nào
+% trong chuỗi monospace dài, tránh tràn lề phải (overfull hbox).
+\usepackage{seqsplit}
+\newcommand{\code}[1]{\texttt{\seqsplit{#1}}}
+
+% ============================================================
+%                       BẮT ĐẦU TÀI LIỆU
+% ============================================================
+\begin{document}
+
+% ============================================================
+%   TRANG BÌA (Mẫu bìa báo cáo - Phụ lục I)
+% ============================================================
+\begin{titlepage}
+  \thispagestyle{empty}
+  \centering
+
+  % --- Tên trường / khoa ----------------------------------------
+  {\fontsize{14}{17}\selectfont\bfseries ĐẠI HỌC BÁCH KHOA HÀ NỘI}\\[4pt]
+  {\fontsize{14}{17}\selectfont\bfseries KHOA TOÁN -- TIN}\\[4pt]
+
+  % --- Logo (bỏ comment nếu có file logo) ----------------------
+  % \includegraphics[width=3.5cm]{logo_hust.png}\\[20pt]
+
+  \vspace{80pt}
+
+  % --- Loại báo cáo: to, đậm, căn giữa ------------------------
+  {\fontsize{20}{25}\selectfont\bfseries
+    ĐỒ ÁN TỐT NGHIỆP}\\[20pt]
+
+  % --- Tên đề tài: đậm, 14pt, căn giữa -------------------------
+  {\fontsize{14}{18}\selectfont\bfseries
+    Mô hình Meta-learning tối ưu vận hành hệ thống điện}\\[16pt]
+
+  % --- Thông tin sinh viên: căn giữa ---------------------------
+  {\fontsize{14}{18}\selectfont\bfseries Nguyễn Tất Cường}\\[4pt]
+  {\fontsize{12}{16}\selectfont Email: cuong.nt227090@sis.hust.edu.vn}\\[4pt]
+  {\fontsize{12}{16}\selectfont Mã sinh viên: 20227090}\\[4pt]
+  {\fontsize{12}{16}\selectfont\bfseries
+    Chuyên ngành Toán -- Tin}\\[30pt]
+
+  % --- GVHD: label+tên bên trái, đường ký + nhãn bên phải -----
+  \noindent
+  \begin{tabular}{@{} p{0.55\linewidth} >{\centering\arraybackslash}p{0.40\linewidth} @{}}
+    \textbf{Giảng viên hướng dẫn:} \quad TS. Trần Ngọc Thắng
+    & \rule{5cm}{0.4pt} \\[-4pt]
+    & {\small Chữ ký của GVHD}
+  \end{tabular}
+
+  \vfill
+
+  % --- Thời gian, địa điểm ------------------------------------
+  {\fontsize{14}{17}\selectfont\bfseries HÀ NỘI, 6/2026}
+\end{titlepage}
+
+
+% ============================================================
+%   TRANG NHẬN XÉT CỦA GIẢNG VIÊN HƯỚNG DẪN
+% ============================================================
+\newpage
+\thispagestyle{empty}
+
+\vspace*{1.4cm}
+\begin{center}
+  {\fontsize{14}{17}\selectfont\bfseries NHẬN XÉT CỦA GIẢNG VIÊN HƯỚNG DẪN}
+\end{center}
+\vspace{0.5cm}
+
+\begingroup
+\setstretch{1.25}
+\setlength{\parindent}{0pt}
+\small
+
+\textbf{1. Mục tiêu và nội dung của đồ án}
+
+\hspace*{0.7cm}\textbf{(a) Mục tiêu:} Đồ án tập trung xây dựng và đánh giá mô hình Meta-learning phục vụ tối ưu vận hành hệ thống điện, kết hợp tối ưu hóa toán học với các phương pháp học máy.
+
+\hspace*{0.7cm}\textbf{(b) Nội dung:} Sinh viên trình bày cơ sở lý thuyết, mô hình hóa bài toán, thiết kế phương pháp giải bằng BO/PPO kết hợp LP, và thực nghiệm trên dữ liệu WECC đã tiền xử lý.
+
+\vspace{0.25cm}
+\textbf{2. Kết quả đạt được}
+
+\hspace*{0.7cm}\textbf{(a)} Xây dựng được quy trình đánh giá phương án đầu tư nguồn điện theo kiến trúc hai cấp, trong đó cấp dưới kiểm tra vận hành bằng quy hoạch tuyến tính.
+
+\hspace*{0.7cm}\textbf{(b)} Thực hiện so sánh các phương pháp trên nhiều kịch bản, làm rõ đánh đổi giữa chi phí đầu tư, chi phí vận hành và độ tin cậy cung cấp điện.
+
+\hspace*{0.7cm}\textbf{(c)} Báo cáo có cấu trúc tương đối đầy đủ, thể hiện được khả năng mô hình hóa, triển khai thực nghiệm và phân tích kết quả.
+
+\vspace{0.25cm}
+\textbf{3. Ý thức làm việc của sinh viên}
+
+\hspace*{0.7cm}\textbf{(a)} Sinh viên có tinh thần làm việc nghiêm túc, chủ động tìm hiểu tài liệu và duy trì trao đổi thường xuyên trong quá trình thực hiện đồ án.
+
+\hspace*{0.7cm}\textbf{(b)} Sinh viên có khả năng tiếp thu góp ý, điều chỉnh mô hình và cập nhật kết quả thực nghiệm theo các yêu cầu chuyên môn.
+
+\hspace*{0.7cm}\textbf{(c)} Sinh viên thể hiện thái độ cầu thị, kiên trì trong quá trình xử lý dữ liệu, chạy thử nghiệm và hoàn thiện báo cáo.
+
+\vspace{1.0cm}
+\begin{flushright}
+  \begin{minipage}{0.45\linewidth}
+    \centering
+    \textit{Hà Nội, ngày ... tháng 06 năm 2026}\\
+    \textit{Giảng viên hướng dẫn}\\[1.9cm]
+    \textbf{TS. TRẦN NGỌC THẮNG}
+  \end{minipage}
+\end{flushright}
+\endgroup
+
+\vfill
+
+
+% ============================================================
+%   LỜI CẢM ƠN
+% ============================================================
+\newpage
+\thispagestyle{plain}
+\pagenumbering{roman}   % Đánh số trang La Mã cho phần đầu
+\setcounter{page}{1}
+
+\chapter*{Lời cam đoan}
+\addcontentsline{toc}{chapter}{Lời cam đoan}
+
+\hspace*{\parindent}
+Em xin cam đoan đồ án tốt nghiệp với đề tài ``Mô hình Meta-learning tối ưu vận hành hệ thống điện'' là công trình nghiên cứu và triển khai do em thực hiện dưới sự hướng dẫn của TS. Trần Ngọc Thắng. Các nội dung trình bày trong báo cáo được xây dựng từ quá trình tìm hiểu lý thuyết, mô hình hóa, lập trình và thực nghiệm của bản thân em.
+
+Các số liệu, kết quả tính toán và hình ảnh trong đồ án được tổng hợp trung thực từ dữ liệu, mã nguồn và các lần thực nghiệm đã nêu trong báo cáo. Những tài liệu, bài báo, bộ dữ liệu và phần mềm tham khảo đều được trích dẫn trong phần tài liệu tham khảo. Em xin chịu trách nhiệm về tính trung thực và đầy đủ của các nội dung trong đồ án này.
+
+\vfill
+\begin{flushright}
+  \begin{minipage}{0.45\linewidth}
+    \centering
+    Hà Nội, tháng 6 năm 2026\\[8pt]
+    \textbf{Sinh viên thực hiện}\\[4pt]
+    \textit{Ký và ghi rõ họ tên}\\[60pt]
+    \textbf{Nguyễn Tất Cường}
+  \end{minipage}
+\end{flushright}
+
+\newpage
+\chapter*{Lời cảm ơn}
+\addcontentsline{toc}{chapter}{Lời cảm ơn}
+
+\hspace*{\parindent}
+Em xin chân thành cảm ơn TS. Trần Ngọc Thắng đã tận tình hướng dẫn, chỉ bảo và tạo điều kiện thuận lợi cho em trong suốt quá trình thực hiện đồ án này. Những góp ý quý báu của thầy đã giúp em hoàn thiện nghiên cứu và nâng cao chất lượng đồ án.
+
+Em cũng xin gửi lời cảm ơn sâu sắc đến các đồng nghiệp tại Trung tâm kinh tế môi trường và biến đổi khí hậu (CECCS) - Liên hiệp các Hội Khoa học và Kỹ thuật Việt Nam (VUSTA) đã luôn đồng hành, hỗ trợ và chia sẻ kinh nghiệm trong suốt thời gian thực hiện đồ án.
+
+Cuối cùng, em xin cảm ơn gia đình, bạn bè đã luôn động viên, ủng hộ và tạo điều kiện tốt nhất để em có thể hoàn thành chương trình học tập.
+
+% ============================================================
+%   TÓM TẮT NỘI DUNG ĐỒ ÁN
+% ============================================================
+\newpage
+\thispagestyle{plain}
+\chapter*{Tóm tắt nội dung đồ án}
+\addcontentsline{toc}{chapter}{Tóm tắt nội dung đồ án}
+
+\noindent
+Bài toán Quy hoạch mở rộng nguồn điện (Generation Expansion Planning - GEP) đóng vai trò then chốt trong việc đảm bảo an ninh năng lượng và tối ưu hóa chi phí đầu tư hệ thống điện. Các phương pháp truyền thống dựa trên Quy hoạch tuyến tính nguyên hỗn hợp (MILP) thường đối mặt với thách thức về tốc độ tính toán khi mở rộng quy mô, trong khi các mô hình tối ưu hóa hộp đen thuần túy như Tối ưu hóa Bayes (BO) hay Học tăng cường (RL) lại khó đảm bảo các ràng buộc vật lý khắt khe của hệ thống.
+
+Đề tài này đề xuất một kiến trúc tối ưu hóa lai hai cấp nhằm kết hợp ưu điểm của cả hai cách tiếp cận. Cấp trên sử dụng BO và PPO để tìm kiếm phương án đầu tư tốt trong không gian tham số rộng lớn. Cấp dưới thực hiện bài toán điều độ kinh tế dựa trên LP để kiểm tra các ràng buộc vận hành tuyến tính và tính toán chi phí vận hành trong mô hình xấp xỉ. Hệ thống được thực hiện trên bộ dữ liệu WECC của Zhang và Li, sau đó được xử lý thành mô hình lưới xấp xỉ 180 bus trong đồ án, kết hợp với các thông số công nghệ từ NREL ATB 2024.
+
+Kết quả thực nghiệm cho thấy BO và PPO có thể tìm được các phương án quy hoạch có ý nghĩa trên các kịch bản stress, đồng thời bộc lộ rõ đánh đổi giữa chi phí vốn, chi phí vận hành và độ tin cậy cung cấp điện. Quy trình phát triển có cấu trúc linh hoạt, nhưng kết quả cần được hiểu trong phạm vi mô hình tuyến tính theo vùng và tập ngày đại diện được sử dụng trong đồ án.
+
+\vfill
+\begin{flushright}
+  \begin{minipage}{0.45\linewidth}
+    \centering
+    Hà Nội, tháng 6 năm 2026\\[8pt]
+    \textbf{Sinh viên thực hiện}\\[4pt]
+    \textit{Ký và ghi rõ họ tên}\\[60pt]
+    \textbf{Nguyễn Tất Cường}
+  \end{minipage}
+\end{flushright}
+
+% ============================================================
+%   MỤC LỤC
+% ============================================================
+\newpage
+\tableofcontents
+
+% ============================================================
+%   DANH MỤC HÌNH VẼ
+% ============================================================
+\newpage
+\listoffigures
+\addcontentsline{toc}{chapter}{Danh mục hình vẽ}
+
+% ============================================================
+%   DANH MỤC BẢNG BIỂU
+% ============================================================
+\newpage
+\listoftables
+\addcontentsline{toc}{chapter}{Danh mục bảng biểu}
+
+% ============================================================
+%   DANH MỤC KÝ HIỆU VÀ CHỮ VIẾT TẮT
+% ============================================================
+\newpage
+\chapter*{Danh mục ký hiệu và chữ viết tắt}
+\addcontentsline{toc}{chapter}{Danh mục ký hiệu và chữ viết tắt}
+
+\begin{longtable}{@{}p{3.0cm}p{11.5cm}@{}}
+  \toprule
+  \textbf{Ký hiệu / Viết tắt} & \textbf{Giải thích} \\
+  \midrule
+  \endhead
+  GEP   & Generation Expansion Planning (Quy hoạch mở rộng nguồn điện) \\
+  ED    & Economic Dispatch (Điều độ kinh tế) \\
+  VOLL  & Value of Lost Load (Giá trị kinh tế của cắt tải) \\
+  CAPEX & Capital Expenditure (Chi phí đầu tư) \\
+  OPEX  & Operational Expenditure (Chi phí vận hành) \\
+  CRF   & Capital Recovery Factor (Nhân tử thu hồi vốn) \\
+  WACC  & Weighted Average Cost of Capital (Chi phí sử dụng vốn trung bình trọng số) \\
+  LP    & Linear Programming (Quy hoạch tuyến tính) \\
+  MILP  & Mixed-Integer Linear Programming (Quy hoạch nguyên hỗn hợp) \\
+  DP    & Dynamic Programming (Quy hoạch động) \\
+  GA    & Genetic Algorithm (Thuật toán di truyền) \\
+  PSO   & Particle Swarm Optimization (Tối ưu bầy đàn) \\
+  SA    & Simulated Annealing (Mô phỏng luyện kim) \\
+  BO    & Bayesian Optimization (Tối ưu hóa Bayes) \\
+  GP    & Gaussian Process (Quá trình Gaussian) \\
+  TPE   & Tree-structured Parzen Estimator (Bộ ước lượng Parzen cấu trúc cây) \\
+  EI    & Expected Improvement (Kỳ vọng cải thiện) \\
+  RL    & Reinforcement Learning (Học tăng cường) \\
+  PPO   & Proximal Policy Optimization (Tối ưu hóa chính sách lân cận) \\
+  TRPO  & Trust Region Policy Optimization (Tối ưu hóa chính sách vùng tin cậy) \\
+  GAE   & Generalized Advantage Estimation (Ước lượng lợi thế tổng quát) \\
+  MDP   & Markov Decision Process (Quá trình quyết định Markov) \\
+  AI    & Artificial Intelligence (Trí tuệ nhân tạo) \\
+  ML    & Machine Learning (Học máy) \\
+  BESS  & Battery Energy Storage System (Hệ thống lưu trữ năng lượng bằng pin) \\
+  CCS   & Carbon Capture and Storage (Thu giữ và lưu trữ carbon) \\
+  PV    & Photovoltaic (Điện mặt trời quang điện) \\
+  CF    & Capacity Factor (Hệ số công suất) \\
+  KKT   & Karush--Kuhn--Tucker (Điều kiện tối ưu Karush--Kuhn--Tucker) \\
+  KKT-LP & Karush--Kuhn--Tucker Linear Programming (Phương pháp LP dựa trên điều kiện KKT) \\
+  BO-TPE & Bayesian Optimization with Tree-structured Parzen Estimator (Tối ưu hóa Bayes dùng TPE) \\
+  KDE   & Kernel Density Estimation (Ước lượng mật độ hạt nhân) \\
+  MPEC  & Mathematical Program with Equilibrium Constraints (Quy hoạch toán học có ràng buộc cân bằng) \\
+  WECC  & Western Electricity Coordinating Council (Hội đồng điều phối điện lực miền Tây Bắc Mỹ) \\
+  NREL  & National Renewable Energy Laboratory (Phòng thí nghiệm Năng lượng tái tạo Quốc gia Hoa Kỳ) \\
+  ATB   & Annual Technology Baseline (Bộ dữ liệu cơ sở công nghệ hằng năm) \\
+  MW    & Megawatt (Đơn vị công suất mêgaoát) \\
+  GW    & Gigawatt (Đơn vị công suất gigaoát) \\
+  MWh   & Megawatt-hour (Đơn vị điện năng mêgaoát-giờ) \\
+  GWh   & Gigawatt-hour (Đơn vị điện năng gigaoát-giờ) \\
+  USD   & United States Dollar (Đô la Mỹ) \\
+  MC20  & Monte Carlo 20 samples (Đánh giá Monte Carlo với 20 mẫu) \\
+  \bottomrule
+\end{longtable}
+
+
+% ============================================================
+%   NỘI DUNG CHÍNH: chuyển sang số Arabic
+% ============================================================
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% ============================================================
+%   CHƯƠNG 1 – GIỚI THIỆU
+% ============================================================
+\input{chapters/chapter1.tex}
+
+% ============================================================
+%   CHƯƠNG 2 – Tổng quan lý thuyết
+% ============================================================
+\input{chapters/chapter2.tex}
+
+% ============================================================
+%   CHƯƠNG 3-4 – Mô hình hóa và phương pháp giải bài toán
+% ============================================================
+\input{chapters/chapter3.tex}
+
+% ============================================================
+%   CHƯƠNG 5 – Kết quả thực nghiệm và thảo luận
+% ============================================================
+\input{chapters/chapter5.tex}
+
+% ============================================================
+%   KẾT LUẬN
+% ============================================================
+\clearpage
+\phantomsection
+\input{chapters/conclusion.tex}
+
+% ============================================================
+%   TÀI LIỆU THAM KHẢO
+% ============================================================
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{TÀI LIỆU THAM KHẢO}
+{\selectlanguage{english}\printbibliography[title={TÀI LIỆU THAM KHẢO}]}
+
+\end{document}

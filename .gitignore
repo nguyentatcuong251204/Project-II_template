@@ -35,6 +35,8 @@ build/
 *.fls
 *.fdb_latexmk
 *.xdv
+*.bcf
+*.run.xml
 
 # Editor directories
 .vscode/

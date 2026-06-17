@@ -1,0 +1,65 @@
+\chapter{Giới thiệu}
+
+\section{Bối cảnh và tầm quan trọng của đề tài}
+
+Hệ thống điện đóng vai trò then chốt trong nền kinh tế hiện đại, cung cấp năng lượng cho các hoạt động sản xuất, kinh doanh và sinh hoạt, đồng thời đòi hỏi quá trình vận hành và quy hoạch phải được thực hiện một cách tin cậy và hiệu quả \cite{wood2013powersystems,koltsaklis2018gep}. Cùng với sự gia tăng nhu cầu phụ tải, xu hướng tích hợp năng lượng tái tạo và các công nghệ phát điện sạch ở quy mô lớn đang làm thay đổi đáng kể cấu trúc và yêu cầu vận hành của hệ thống điện hiện đại \cite{oree2017gep_review,nrel2024atb}.
+
+Bài toán GEP là một trong những bài toán trung tâm của quy hoạch hệ thống điện. GEP nhằm xác định phương án đầu tư xây dựng các nguồn phát điện mới một cách tối ưu, cân bằng giữa chi phí đầu tư, chi phí vận hành và độ tin cậy cung cấp điện \cite{koltsaklis2018gep,sadeghi2017gep_review}. Trong bối cảnh biến đổi khí hậu và chuyển dịch năng lượng, GEP không chỉ cần đảm bảo an ninh năng lượng mà còn phải hỗ trợ quá trình tích hợp năng lượng tái tạo và đáp ứng các mục tiêu phát triển bền vững \cite{oree2017gep_review}.
+
+Các phương pháp truyền thống để giải quyết GEP chủ yếu dựa trên MILP và các biến thể tối ưu hóa toán học chính xác \cite{koltsaklis2018gep,sadeghi2017gep_review}. Tuy nhiên, khi quy mô hệ thống tăng lên và mức độ bất định do năng lượng tái tạo ngày càng lớn, các phương pháp này thường gặp phải những hạn chế sau \cite{oree2017gep_review}:
+
+\begin{itemize}
+    \item Khó khăn trong việc xử lý các ràng buộc phi tuyến tính phức tạp
+    \item Thời gian tính toán tăng theo cấp số nhân khi quy mô hệ thống lớn
+    \item Khó thích ứng với sự biến động của các thông số đầu vào như giá nhiên liệu, công nghệ mới
+    \item Thường bỏ qua các yếu tố không chắc chắn trong tương lai
+\end{itemize}
+
+Mặt khác, các phương pháp AI và học máy, đặc biệt là BO và RL, đã cho thấy hiệu quả trong nhiều bài toán tối ưu hóa hộp đen và ra quyết định trong không gian hành động phức tạp \cite{shahriari2016bo_survey,sutton2018rl,schulman2017ppo}. Tuy nhiên, việc áp dụng các mô hình AI/hộp đen thuần túy này vào GEP cũng gặp phải những thách thức:
+
+\begin{itemize}
+    \item Khó kiểm soát trực tiếp các ràng buộc vật lý khắt khe của hệ thống điện
+    \item Yêu cầu số lần đánh giá mẫu lớn hoặc thời gian huấn luyện dài
+    \item Khó hội tụ trong không gian tìm kiếm vô cùng rộng lớn nếu không tận dụng triệt để thông tin giải tích của hệ thống
+\end{itemize}
+
+\section{Mục tiêu nghiên cứu}
+
+Đề tài này nhằm phát triển một mô hình tối ưu hóa lai hai cấp kết hợp ưu điểm của cả quy hoạch toán học LP/MILP và các thuật toán học máy/AI như BO và RL để giải quyết bài toán GEP một cách hiệu quả. Cụ thể, các mục tiêu chính bao gồm:
+
+\begin{enumerate}
+    \item Phát triển kiến trúc tối ưu hóa lai hai cấp cho bài toán GEP, trong đó bài toán vận hành ở cấp dưới được tuyến tính hóa và phát biểu dưới dạng LP nhằm đảm bảo tính khả thi tính toán. Cấp trên không được mô hình hóa như một LP tường minh, mà được xử lý bằng BO hoặc RL như một bài toán tối ưu không đạo hàm trên hàm mục tiêu hộp đen sinh ra từ lời giải cấp dưới. Đồng thời, xây dựng phương pháp KKT-LP làm mốc so sánh dựa trên trực giác đối ngẫu của bài toán vận hành tuyến tính \cite{shahriari2016bo_survey,sutton2018rl}
+    \item Đánh giá hiệu suất của mô hình trên bộ dữ liệu WECC của Zhang và Li, được tiền xử lý trong đồ án thành mô hình lưới xấp xỉ 180 bus \cite{zhang2023dataset}
+    \item So sánh với các phương pháp truyền thống và hiện đại khác
+    \item Phát triển quy trình tính toán có cấu trúc linh hoạt cho các ứng dụng thực tế
+\end{enumerate}
+
+\section{Phạm vi nghiên cứu}
+
+Đề tài tập trung vào các nội dung chính sau:
+
+\begin{itemize}
+    \item Nghiên cứu lý thuyết về bài toán GEP và các phương pháp giải quyết \cite{koltsaklis2018gep,sadeghi2017gep_review}
+    \item Phát triển thuật toán tối ưu hóa lai hai cấp
+    \item Thực nghiệm trên mô hình WECC được xây dựng từ dữ liệu của Zhang và Li, với quy mô xấp xỉ 180 bus sau tiền xử lý \cite{zhang2023dataset}
+    \item Phân tích độ nhạy và độ tin cậy của các phương án quy hoạch
+\end{itemize}
+
+\section{Đối tượng nghiên cứu}
+
+Đối tượng nghiên cứu của đồ án là bài toán quy hoạch mở rộng nguồn điện trên hệ thống WECC đã được tiền xử lý thành mô hình tính toán theo vùng. Ở cấp quy hoạch, đồ án xem xét quyết định đầu tư bổ sung công suất theo từng vùng và từng công nghệ, bao gồm điện mặt trời, điện gió, Gas-CCS và pin lưu trữ BESS. Các quyết định này được biểu diễn bằng vector công suất đầu tư và được đánh giá thông qua chi phí vốn niên kim hóa, chi phí vận hành và mức thiếu hụt phụ tải.
+
+Ở cấp vận hành, đối tượng nghiên cứu là bài toán điều độ kinh tế tuyến tính dùng để kiểm tra tính khả thi của mỗi phương án đầu tư trên các ngày đại diện và các kịch bản phụ tải/chính sách khác nhau. Bài toán cấp dưới mô tả cân bằng cung--cầu theo vùng, giới hạn công suất phát, giới hạn trao đổi giữa các vùng và biến cắt tải có phạt kinh tế. Vì vậy, trọng tâm của đồ án không phải là xây dựng mô hình thị trường điện đầy đủ, mà là kiểm tra khả năng kết hợp giữa một mô hình vận hành LP có ràng buộc vật lý cơ bản và các phương pháp tìm kiếm cấp trên.
+
+\section{Phương pháp nghiên cứu}
+
+Đồ án sử dụng kết hợp các phương pháp mô hình hóa toán học, tối ưu hóa và học máy. Trước hết, bài toán GEP được phát biểu theo kiến trúc hai cấp: cấp trên sinh phương án đầu tư, cấp dưới giải bài toán điều độ LP để trả về chi phí và mức cắt tải. Cách tách này giúp mỗi phương án đầu tư được đánh giá nhất quán bằng cùng một mô hình vận hành, đồng thời giữ chi phí tính toán ở mức có thể chạy lặp lại trong khuôn khổ đồ án.
+
+Trên cấp trên, đồ án triển khai tối ưu hóa Bayes dùng TPE và học tăng cường PPO để tìm kiếm trong không gian đầu tư liên tục/rời rạc hóa theo vùng và công nghệ. KKT-LP được xây dựng từ trực giác cận biên của bài toán vận hành tuyến tính nhằm cung cấp mốc so sánh có khả năng diễn giải. Các phương án thu được được đánh giá trên các kịch bản xác định, bộ 20 mẫu Monte Carlo cho kịch bản bền vững và tập 800 kịch bản ngẫu nhiên để kiểm tra khả năng chuyển giao ngoài cấu hình huấn luyện.
+
+\section{Ý nghĩa khoa học và thực tiễn}
+
+Về mặt khoa học, đồ án minh họa một khung lai giữa tối ưu hóa hộp đen và quy hoạch tuyến tính cho bài toán GEP. Thay vì dùng BO hoặc PPO như một mô hình độc lập hoàn toàn, các thuật toán này được đặt phía trên một bài toán LP cấp dưới để mọi phương án đầu tư đều được kiểm tra bởi cùng một cơ chế vận hành. Cấu trúc này giúp làm rõ vai trò của mô hình toán học trong việc ràng buộc và diễn giải kết quả của các phương pháp học máy.
+
+Về mặt thực tiễn, khung tính toán cho phép so sánh định lượng đánh đổi giữa chi phí đầu tư, chi phí vận hành và độ tin cậy cung cấp điện dưới nhiều kịch bản. Kết quả có thể hỗ trợ phân tích sơ bộ các phương án mở rộng nguồn trong điều kiện có phụ tải tăng, chính sách carbon và suy giảm công suất nguồn hiện hữu. Tuy nhiên, các kết luận cần được hiểu trong phạm vi mô hình xấp xỉ theo vùng, tập ngày đại diện và các ràng buộc tuyến tính đã sử dụng; để phục vụ quy hoạch vận hành thực tế cần mở rộng thêm mô hình lưới, ràng buộc kỹ thuật và dữ liệu thời gian dài hơn.
+ 
